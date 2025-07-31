@@ -1,0 +1,2 @@
+for create random jwt secret key:
+    node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
