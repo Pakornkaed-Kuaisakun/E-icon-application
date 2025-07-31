@@ -31,7 +31,7 @@ app.use('/api/photo', photoRoute);
 app.use('/api/app', appInfoRoute);
 
 initDB().then(() => {
-    const server = app.listen(PORT, () => {
-        console.log(`Server is running on http://localhost:${PORT}`);
+    app.listen(PORT, () => {
+        console.log(`Server is running on ${PORT}`);
     });
 });
