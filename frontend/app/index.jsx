@@ -70,7 +70,7 @@ export default function Index() {
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
+        <View style={{ flex: 1, backgroundColor: '#ffffffff' }}>
             <TopNavBarIndex username={userInfo.username} />
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <UserTreeInfo
@@ -82,8 +82,8 @@ export default function Index() {
                     disabled={userInfo.growingPoint === 0 || loading}
                     onPress={growTree}
                 />
-                <Text style={{ marginTop: 15 }}>
-                    You have growing Point: {userInfo.growingPoint} point
+                <Text style={{ marginTop: 15, color: "#b9b9b9ff" }}>
+                    Points held: {userInfo.growingPoint} point
                 </Text>
             </View>
             <BottomNavBar />

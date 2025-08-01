@@ -58,7 +58,7 @@ export const BottomNavBar = () => {
                         }}
                         style={{
                             alignItems: 'center',
-                            backgroundColor: isFocused ? COLORS.income : 'transparent',
+                            backgroundColor: isFocused ? COLORS.primary : 'transparent',
                             padding: 10,
                             borderRadius: 18,
                         }}
@@ -66,9 +66,9 @@ export const BottomNavBar = () => {
                         <Ionicons
                             name={item.icon}
                             size={24}
-                            color={isFocused ? '#f5f5f5' : COLORS.text}
+                            color={isFocused ? '#ffffffff' : COLORS.text}
                         />
-                        <Text style={{ fontWeight: '600', color: isFocused ? '#f5f5f5' : COLORS.text }}>
+                        <Text style={{ fontWeight: '600', color: isFocused ? '#ffffffff' : COLORS.text }}>
                             {item.name}
                         </Text>
                     </TouchableOpacity>
