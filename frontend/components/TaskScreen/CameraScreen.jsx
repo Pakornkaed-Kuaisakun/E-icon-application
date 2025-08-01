@@ -52,7 +52,7 @@ export default function CameraScreen({ onPictureTaken, onClose }) {
                         <TouchableOpacity onPress={takePicture} style={styles.button}>
                             <Text style={styles.buttonText}>Take Photo</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={onClose} style={[styles.button, { backgroundColor: '#C6131B' }]}>
+                        <TouchableOpacity onPress={onClose} style={[styles.button, { backgroundColor: '#b3b3b3ff' }]}>
                             <Text style={styles.buttonText}>Cancel</Text>
                         </TouchableOpacity>
                     </View>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
         right: Dimensions.get('window').width / 3.25
     },
     button: {
-        backgroundColor: '#007bff',
+        backgroundColor: '#5a6daa',
         padding: 12,
         marginVertical: 5,
         borderRadius: 8,
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     buttonText: {
-        color: '#fff',
+        color: '#ffffffff',
         fontWeight: 'bold',
     },
     previewContainer: {

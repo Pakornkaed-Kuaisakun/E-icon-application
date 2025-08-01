@@ -29,7 +29,7 @@ export default function PhotoScreen({ taskData, userTaskData, userData, onConfir
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f2f2f2',
+        backgroundColor: '#ffffff',
         padding: 14,
         justifyContent: 'center',
         borderBlockColor: 'lightgray',
@@ -59,14 +59,14 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     confirmButton: {
-        backgroundColor: '#28a745',
+        backgroundColor: '#5a6daa',
         paddingVertical: 12,
         paddingHorizontal: 24,
         borderRadius: 8,
         flexDirection: 'row'
     },
     rejectButton: {
-        backgroundColor: '#dc3545',
+        backgroundColor: '#a5a5a5ff',
         paddingVertical: 12,
         paddingHorizontal: 24,
         borderRadius: 8,

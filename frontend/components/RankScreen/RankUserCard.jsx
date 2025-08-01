@@ -28,7 +28,7 @@ export default function RankUserCard({ userid, index }) {
 const styles = StyleSheet.create({
     card: {
         flexDirection: 'row',
-        backgroundColor: '#fff',
+        backgroundColor: '#ffffff',
         padding: 13,
         marginVertical: 6,
         borderRadius: 10,
@@ -41,19 +41,19 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 24,
-        backgroundColor: '#ccc',
+        backgroundColor: '#5a6daa',
     },
     info: {
         flex: 1,
         marginLeft: 12,
     },
     name: {
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: '600',
     },
     username: {
-        fontSize: 13,
-        color: '#777',
+        fontSize: 15,
+        color: '#5a6daa',
     },
     actions: {
         flexDirection: 'row',
@@ -65,29 +65,29 @@ const styles = StyleSheet.create({
         borderRadius: 6,
     },
     accept: {
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#5a6daa',
     },
     reject: {
-        backgroundColor: '#F44336',
+        backgroundColor: '#9f0000',
     },
     buttonText: {
-        color: '#fff',
+        color: '#5a6daa',
         fontWeight: '500',
     },
     badges: {
         paddingVertical: 5,
         paddingHorizontal: 10,
-        backgroundColor: '#52c41a',
+        backgroundColor: '#5a6daa',
         borderRadius: 25,
         fontSize: 14,
         fontWeight: 'bold',
-        color: '#1f1f1f'
+        color: '#ffffffff'
     },
     rank: {
         width: 30,
         fontSize: 16,
         fontWeight: 'bold',
-        color: '#000',
+        color: '#000000ff',
         marginRight: 12,
         marginTop: 4,
         textAlign: 'center',

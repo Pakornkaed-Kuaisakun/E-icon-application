@@ -150,14 +150,13 @@ export default function Task() {
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
+        <View style={{ flex: 1, backgroundColor: '#ffffffff' }}>
             <TopNavBarGlobal pageName="Task" />
             <View style={{ flex: 1, alignItems: 'center', marginTop: 0 }}>
                 {showCamera ? (
                     <CameraScreen onPictureTaken={handlePictureTaken} onClose={() => setShowCamera(false)} />
                 ) : (
                     <View style={{ flex: 1, alignItems: 'center', marginTop: 0 }}>
-                        <Text style={{ marginTop: 15, fontSize: 30, fontWeight: 'bold' }}>Daily Task</Text>
                         <ScrollView contentContainerStyle={{ width: Dimensions.get('window').width - 15, marginTop: 13 }}>
                             {taskResult && taskResult.length > 0 ? (
                                 taskResult.map((task) => {

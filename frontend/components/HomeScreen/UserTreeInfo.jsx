@@ -11,17 +11,17 @@ export function UserTreeInfo({ level, type, points }) {
             <Text style={{ fontSize: 24, fontWeight: 'bold', color: COLORS.primary, marginBottom: 5 }}>
                 Level: {level ?? 'Loading...'}
             </Text>
-            <Text style={{ fontSize: 18, fontWeight: '600', color: COLORS.text }}>
+            <Text style={{ fontSize: 18, fontWeight: '300', color: COLORS.text, marginBottom: 20 }}>
                 Sapling - {type}
             </Text>
-            <Image source={require('@/assets/images/demo-tree-seed.png')} style={{ width: '50%', height: '50%', marginBottom: 7 }} />
+            <Image source={require('@/assets/images/demo-tree-seed.png')} style={{ width: 200, height: 200, marginBottom: 7 }} />
             <ProgressBar
                 progress={progress}
-                width={Dimensions.get('window').width - 80}
+                width={Dimensions.get('window').width - 70}
                 height={10}
-                color={COLORS.primary}
+                color="#5a6daa"
                 borderRadius={20}
-                unfilledColor="#e0e0e0"
+                unfilledColor="#ffffffff"
             />
             <Text style={{ textAlign: 'center', marginTop: 10, color: COLORS.text }}>
                 {points} / 100 Points
