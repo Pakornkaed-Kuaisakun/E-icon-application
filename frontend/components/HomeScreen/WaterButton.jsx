@@ -8,7 +8,7 @@ export function WaterButton({ disabled, onPress }) {
             style={{
                 marginTop: 20,
                 padding: 15,
-                backgroundColor: disabled ? '#90A4AE' : '#0277BD',
+                backgroundColor: disabled ? '#0088ff' : '#0088ff',
                 borderRadius: 30,
                 flexDirection: 'row',
                 alignItems: 'center'
@@ -16,8 +16,8 @@ export function WaterButton({ disabled, onPress }) {
             disabled={disabled}
             onPress={onPress}
         >
-            <Ionicons name='water-outline' size={24} color='#f5f5f5' style={{ marginRight: 6 }} />
-            <Text style={{ color: '#f5f5f5', fontWeight: 'bold' }}>Water</Text>
+            <Ionicons name='water-outline' size={24} color='#ffffffff' style={{ marginRight: 6 }} />
+            <Text style={{ color: '#ffffffff', fontWeight: 'bold' }}>Water</Text>
         </TouchableOpacity>
     );
 }
