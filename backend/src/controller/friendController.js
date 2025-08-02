@@ -57,7 +57,12 @@ export async function AddFriend(req, res) {
 
 export async function searchUser(req, res) {
     try {
-        const result = await db`SELECT * FROM users WHERE LOWER(email) = LOWER(${decodeURIComponent(req.params.email)}) ORDER BY created_at DESC LIMIT 1`;
+        const result = await db`
+            SELECT * FROM users 
+            WHERE LOWER(email) ILIKE ${'%' + decodeURIComponent(req.params.email).toLowerCase() + '%'} 
+            ORDER BY created_at DESC 
+            LIMIT 10
+        `;
         if (result.length > 0) {
             res.status(200).json({ user: result[0] });
         } else {
