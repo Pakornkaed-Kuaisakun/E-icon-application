@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
+import { COLORS } from '@/constants/colors';
 
 export default function MainFriendCard({ userid }) {
     // console.log(userid);
@@ -72,10 +73,10 @@ const styles = StyleSheet.create({
     badges: {
         paddingVertical: 5,
         paddingHorizontal: 10,
-        backgroundColor: '#52c41a',
+        backgroundColor: COLORS.income,
         borderRadius: 25,
         fontSize: 14,
         fontWeight: 'bold',
-        color: '#1f1f1f'
+        color: '#f1f1f1'
     }
 });
