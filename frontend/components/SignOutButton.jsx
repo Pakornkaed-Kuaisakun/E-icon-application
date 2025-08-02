@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React from 'react';
 
-export const SignOutButton = () => {
+export const SignOutButton = ({ style }) => {
     const router = useRouter();
     const handleSignOut = async () => {
         try {
@@ -19,8 +19,8 @@ export const SignOutButton = () => {
     }
 
     return (
-        <TouchableOpacity onPress={handleSignOut} style={{ padding: 7, backgroundColor: '#ff6666', borderRadius: 5 }}>
-            <Text style={{ color: '#fff', fontSize: 13, fontWeight: 'bold' }}>Sign Out</Text>
+        <TouchableOpacity onPress={handleSignOut} style={style}>
+            <Text style={{ color: '#fff', fontSize: 15, fontWeight: 600 }}>Sign Out</Text>
         </TouchableOpacity>
     );
 }

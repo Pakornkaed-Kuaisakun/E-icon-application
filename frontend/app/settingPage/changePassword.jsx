@@ -6,7 +6,8 @@ import axios from 'axios';
 import BASE_API_URL from '@/constants/path';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS } from '@/constants/colors';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import SettingHeader from '../../components/SettingScreen/SettingHeader';
 
 const ChangePasswordScreen = () => {
     const navigation = useNavigation();
@@ -64,12 +65,7 @@ const ChangePasswordScreen = () => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.navigate('settingPage/setting')}>
-                    <Ionicons name="chevron-back" size={24} color="#6b6b94" />
-                </TouchableOpacity>
-                <Text style={styles.headerTitle}>Change Password</Text>
-            </View>
+            <SettingHeader name='Change Password' route='settingPage/profile' />
 
             <KeyboardAwareScrollView contentContainerStyle={{ marginTop: 30 }} enableOnAndroid={true} enableAutomaticScroll={true}>
                 {error ? (
@@ -94,6 +90,7 @@ const ChangePasswordScreen = () => {
                     style={styles.input}
                     secureTextEntry
                     placeholder="Current Password"
+                    placeholderTextColor='#B9BBB6'
                     value={currentPassword}
                     onChangeText={setCurrentPassword}
                 />
@@ -102,6 +99,7 @@ const ChangePasswordScreen = () => {
                     style={styles.input}
                     secureTextEntry
                     placeholder="New Password"
+                    placeholderTextColor='#B9BBB6'
                     value={newPassword}
                     onChangeText={setNewPassword}
                 />
@@ -110,6 +108,7 @@ const ChangePasswordScreen = () => {
                     style={styles.input}
                     secureTextEntry
                     placeholder="Confirm New Password"
+                    placeholderTextColor='#B9BBB6'
                     value={confirmPassword}
                     onChangeText={setConfirmPassword}
                 />

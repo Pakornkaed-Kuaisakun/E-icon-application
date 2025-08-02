@@ -28,7 +28,7 @@ export const BottomNavBar = () => {
     return (
         <View
             style={{
-                height: 80,
+                height: 100,
                 backgroundColor: COLORS.background,
                 flexDirection: 'row',
                 justifyContent: 'space-around',

@@ -8,7 +8,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import BASE_API_URL from '../constants/path';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import PhotoScreen from '../components/PhotoScreen.jsx/PhotoCard';
+import PhotoScreen from '../components/PhotoScreen/PhotoCard';
 
 export default function Photo() {
     const authentication = useAuth();
@@ -17,7 +17,7 @@ export default function Photo() {
     const [userID, setUserID] = useState(null);
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState('');
-    const [userResult, setUserResult] = useState([]);
+    // const [userResult, setUserResult] = useState([]);
     const [taskResult, setTaskResult] = useState([]);
     const [userTask, setUserTask] = useState([]);
     const [userData, setUserData] = useState([]);
@@ -41,7 +41,7 @@ export default function Photo() {
             setTaskResult([]);
             setUserTask([]);
             setUserData([]);
-            setMessage('No Task to Confirm');
+            setMessage('No Today Task to Confirm');
         } finally {
             setLoading(false);
         }

@@ -9,6 +9,8 @@ import LoadingScreen from '@/components/LoadingScreen';
 import axios from 'axios';
 import BASE_API_URL from '@/constants/path';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SignOutButton } from '@/components/SignOutButton';
+import SettingHeader from '../../components/SettingScreen/SettingHeader';
 
 const ProfileScreen = () => {
     const authentication = useAuth();
@@ -74,12 +76,7 @@ const ProfileScreen = () => {
     return (
         <View style={styles.container}>
             {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.navigate('settingPage/setting')}>
-                    <Ionicons name="chevron-back" size={24} color="#6b6b94" />
-                </TouchableOpacity>
-                <Text style={styles.headerTitle}>Account</Text>
-            </View>
+            <SettingHeader name='Profile' route='index' />
             <View style={{ flex: 1, alignItems: 'center' }}>
                 <Image
                     source={{ uri: `https://avatar.iran.liara.run/username?username=${userInfo.username}` }}
@@ -102,9 +99,11 @@ const ProfileScreen = () => {
                     <Text style={styles.value}>{userInfo.email}</Text>
                 </View>
 
-                <TouchableOpacity onPress={() => navigation.navigate('settingPage/changePassword')} style={styles.button}>
+                <TouchableOpacity onPress={() => navigation.navigate('settingPage/changePassword')} style={styles.changePasswordButton}>
                     <Text style={styles.buttonText}>Change Password</Text>
                 </TouchableOpacity>
+
+                <SignOutButton style={styles.signOutButton} />
             </View>
         </View>
     );
@@ -118,12 +117,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         paddingTop: 50,
         paddingHorizontal: 16,
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 20,
-        justifyContent: 'space-between',
     },
     avatar: {
         width: 120,
@@ -142,21 +135,25 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: 'gray',
     },
-    button: {
+    changePasswordButton: {
         marginTop: 40,
         backgroundColor: '#1e90ff',
         paddingVertical: 12,
         paddingHorizontal: 30,
         borderRadius: 25,
     },
+    signOutButton: {
+        marginTop: 20,
+        backgroundColor: '#ff1e1eff',
+        paddingVertical: 12,
+        paddingHorizontal: 30,
+        borderRadius: 25,
+        width: '55%',
+        alignItems: 'center',
+    },
     buttonText: {
         color: '#fff',
         fontSize: 16,
-    },
-    headerTitle: {
-        color: COLORS.text,
-        fontSize: 27,
-        fontWeight: '600',
     },
     optionRow: {
         width: '95%',

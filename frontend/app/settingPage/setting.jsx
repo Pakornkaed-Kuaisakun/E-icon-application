@@ -7,6 +7,7 @@ import { useAuth } from '@/assets/lib/auth';
 import LoadingScreen from '@/components/LoadingScreen';
 import axios from 'axios';
 import BASE_API_URL from '@/constants/path';
+import SettingHeader from '../../components/SettingScreen/SettingHeader';
 
 export default function SettingsScreen() {
     const authentication = useAuth();
@@ -48,12 +49,7 @@ export default function SettingsScreen() {
     return (
         <View style={styles.container}>
             {/* Header */}
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigate.navigate('index')}>
-                    <Ionicons name="chevron-back" size={24} color="#6b6b94" />
-                </TouchableOpacity>
-                <Text style={styles.headerTitle}>Setting</Text>
-            </View>
+            <SettingHeader name='Setting' route='index' />
 
             {/* Options */}
             <TouchableOpacity style={styles.optionRow} onPress={() => navigate.navigate('settingPage/profile')}>
