@@ -84,7 +84,7 @@ export async function updateTaskStatus(req, res) {
     try {
         const update = await db`
             UPDATE usertask 
-            SET "proofImageURL" = ${imgPath}, "status" = ${status} 
+            SET "proofImageURL" = ${imgPath}, "status" = ${status || 'completed'} 
             WHERE userid = ${userid} AND taskid = ${taskid} AND "date" = ${date}
             RETURNING *`;
 
@@ -99,7 +99,7 @@ export async function updateTaskStatus(req, res) {
 
         const updatePoint = await db`
             UPDATE users 
-            SET "growingPoint" = ${Number(point) + Number(userData[0].growingPoint)} 
+            SET "growingPoint" = ${Number(Number(point) + Number(userData[0].growingPoint))} 
             WHERE userid = ${userid}`;
 
         if (updatePoint) {
