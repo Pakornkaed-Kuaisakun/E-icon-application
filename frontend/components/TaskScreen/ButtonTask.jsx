@@ -8,31 +8,31 @@ export default function ButtonTask({ status, onTakePhoto, userid, taskid }) {
       {status === 'completed' ? (
         <View
           style={{
-            backgroundColor: '#d4edda',
+            backgroundColor: '#878fabff',
             paddingVertical: 8,
             paddingHorizontal: 16,
             borderRadius: 8,
           }}
         >
-          <Text style={{ color: '#155724', fontWeight: 'bold' }}>Completed</Text>
+          <Text style={{ color: '#5a668fff', fontWeight: 'bold' }}>Completed</Text>
         </View>
       ) : status === 'pending' ? (
         <View
           style={{
-            backgroundColor: '#fff3cd',
+            backgroundColor: '#c5c5c5ff',
             paddingVertical: 8,
             paddingHorizontal: 16,
             borderRadius: 8,
           }}
         >
-          <Text style={{ color: '#856404', fontWeight: 'bold' }}>Pending</Text>
+            <Text style={{ color: '#707070ff', fontWeight: 'bold' }}>Pending</Text>
         </View>
       ) : (
         // unfinished (or any other fallback)
         <TouchableOpacity
           onPress={onTakePhoto}
           style={{
-            backgroundColor: '#007bff',
+            backgroundColor: '#5a6daa',
             paddingVertical: 10,
             paddingHorizontal: 13,
             borderRadius: 10,

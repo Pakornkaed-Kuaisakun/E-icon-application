@@ -107,7 +107,7 @@ export default function Friend() {
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
+        <View style={{ flex: 1, backgroundColor: '#ffffffff' }}>
             <TopNavBarGlobal style={{ top: 0, left: 0 }} pageName={'Friends'} />
             <View style={{ flex: 1 }}>
                 <FriendNavBar />
@@ -117,7 +117,7 @@ export default function Friend() {
                         <View style={{ position: 'relative', marginBottom: 20 }}>
                             <TextInput
                                 style={{
-                                    borderColor: '#9A8478',
+                                    borderColor: '#5a6daa',
                                     borderWidth: 1,
                                     borderRadius: 20,
                                     width: '100%',
@@ -127,7 +127,7 @@ export default function Friend() {
                                 }}
                                 autoCapitalize="none"
                                 placeholder="Search Email"
-                                placeholderTextColor="#9A8478"
+                                placeholderTextColor="#5a6daa"
                                 value={searchTerm}
                                 onChangeText={(text) => setSearchTerm(text ?? '')}
                             />
@@ -135,14 +135,14 @@ export default function Friend() {
                                 <Ionicons
                                     name="search-outline"
                                     size={20}
-                                    style={{ position: 'absolute', right: 15, top: 15, color: '#9A8478' }}
+                                    style={{ position: 'absolute', right: 15, top: 15, color: '#5a6daa' }}
                                 />
                             ) : (
                                 <TouchableOpacity
                                     onPress={() => setSearchTerm('')}
                                     style={{ position: 'absolute', right: 15, top: 15 }}
                                 >
-                                    <Ionicons name="close-circle" size={20} color="#9A8478" />
+                                    <Ionicons name="close-circle" size={20} color="#5a6daa" />
                                 </TouchableOpacity>
                             )}
                         </View>

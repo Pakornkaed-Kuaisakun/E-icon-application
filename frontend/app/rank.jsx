@@ -74,10 +74,9 @@ export default function Rank() {
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
-            <TopNavBarGlobal pageName="Ranked" />
+        <View style={{ flex: 1, backgroundColor: '#ffffffff' }}>
+            <TopNavBarGlobal pageName="Rank" />
             <View style={{ flex: 1, alignItems: 'center' }}>
-                <Text style={{ marginTop: 24, marginBottom: 10, fontSize: 28, fontWeight: 'bold' }}>Top 10 Global Ranked</Text>
                 <ScrollView contentContainerStyle={{ width: Dimensions.get('window').width - 10 }}>
                     {userResult && userResult.length > 0 ? (
                         userResult.map((userid, index) => (

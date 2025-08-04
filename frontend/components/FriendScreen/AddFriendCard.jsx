@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         color: '#777',
     },
     button: {
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#5a6daa',
         paddingVertical: 6,
         paddingHorizontal: 12,
         borderRadius: 8,
@@ -86,7 +86,7 @@ export const AddFriendCard = ({ senderID, receiver, onAddFriend, loading }) => {
             )}
 
             {friendState === 'accept' && (
-                <View style={[styles.button, { backgroundColor: '#2196F3' }]}>
+                <View style={[styles.button, { backgroundColor: '#5a6daa' }]}>
                     <Text style={styles.buttonText}>Friend</Text>
                 </View>
             )}

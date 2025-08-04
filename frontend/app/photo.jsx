@@ -115,7 +115,7 @@ export default function Photo() {
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
+        <View style={{ flex: 1, backgroundColor: '#ffffffff' }}>
             <TopNavBarGlobal pageName="Photo" />
             <View style={{ flex: 1, alignItems: 'center' }}>
                 <ScrollView contentContainerStyle={{ width: Dimensions.get('window').width - 15, marginTop: 13 }}>

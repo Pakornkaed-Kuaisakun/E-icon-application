@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     button: {
-        backgroundColor: '#1e90ff',
+        backgroundColor: '#5a6daa',
         paddingVertical: 14,
         borderRadius: 10,
         alignItems: 'center',
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     },
     // Error styles
     errorBox: {
-        backgroundColor: "#FFE5E5",
+        backgroundColor: "#ffffffff",
         padding: 12,
         borderRadius: 8,
         borderLeftWidth: 4,
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
 
     // Success styles
     successBox: {
-        backgroundColor: "#b5f5c2ff",
+        backgroundColor: "#5a6daa",
         padding: 12,
         borderRadius: 8,
         borderLeftWidth: 4,

@@ -64,7 +64,7 @@ export default function CameraScreen({ onPictureTaken, onClose }) {
                             <TouchableOpacity onPress={handleRetake} style={[styles.button, { backgroundColor: '#777' }]}>
                                 <Text style={styles.buttonText}>Retake</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={handleSend} style={[styles.button, { backgroundColor: '#007bff' }]}>
+                            <TouchableOpacity onPress={handleSend} style={[styles.button, { backgroundColor: '#5a6daa' }]}>
                                 <Text style={styles.buttonText}>Send</Text>
                             </TouchableOpacity>
                         </View>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
         right: Dimensions.get('window').width / 3.25
     },
     button: {
-        backgroundColor: '#007bff',
+        backgroundColor: '#5a6daa',
         padding: 12,
         marginVertical: 5,
         borderRadius: 8,

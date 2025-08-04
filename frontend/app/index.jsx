@@ -1,5 +1,5 @@
-import { View, Text } from 'react-native';
-import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, PanResponder } from 'react-native';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '@/assets/lib/auth';
 import { useRouter } from 'expo-router';
@@ -64,13 +64,28 @@ export default function Index() {
         }
     }, [authentication, router]);
 
+    // ✅ Slide Gesture Handler
+    const panResponder = useRef(
+        PanResponder.create({
+            onMoveShouldSetPanResponder: (_, gesture) => Math.abs(gesture.dx) > 20,
+            onPanResponderRelease: (_, gesture) => {
+                if (gesture.dx < -50) {
+                    // Slide Left
+                    router.push('/task/dailyTask');
+                }
+            },
+        })
+    ).current;
+
     if (authentication === null || !userInfo) {
-        // router.replace('/auth/sign-in');
         return <LoadingScreen />;
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
+        <View
+            style={{ flex: 1, backgroundColor: '#ffffffff' }}
+            {...panResponder.panHandlers} // 👈 Attach gesture here
+        >
             <TopNavBarIndex username={userInfo.username} />
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <UserTreeInfo
@@ -83,7 +98,7 @@ export default function Index() {
                     onPress={growTree}
                 />
                 <Text style={{ marginTop: 15 }}>
-                    You have growing Point: {userInfo.growingPoint} point
+                    Point you held: {userInfo.growingPoint} point
                 </Text>
             </View>
             <BottomNavBar />

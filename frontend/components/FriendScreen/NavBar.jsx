@@ -17,7 +17,7 @@ export const FriendNavBar = () => {
         <View
             style={{
                 height: 60,
-                backgroundColor: '#f5f5f5',
+                backgroundColor: '#ffffffff',
                 flexDirection: 'row',
                 justifyContent: 'space-around',
                 alignItems: 'center',

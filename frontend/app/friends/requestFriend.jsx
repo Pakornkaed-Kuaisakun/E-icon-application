@@ -112,7 +112,7 @@ export default function Friend() {
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
+        <View style={{ flex: 1, backgroundColor: '#ffffffff' }}>
             <TopNavBarGlobal pageName="Friends" />
             <View style={{ flex: 1 }}>
                 <FriendNavBar />

@@ -39,14 +39,14 @@ const purpleTheme = {
 };
 
 const oceanTheme = {
-    primary: "#0277BD",
-    background: "#E1F5FE",
-    text: "#01579B",
-    border: "#B3E5FC",
+    primary: "#5a6daa",
+    background: "#ffffffff",
+    text: "#5a6daa",
+    border: "#ffffffff",
     white: "#FFFFFF",
-    textLight: "#4FC3F7",
+    textLight: "#cececeff",
     expense: "#EF5350",
-    income: "#5A66A3",
+    income: "#5a6daa",
     card: "#FFFFFF",
     shadow: "#000000",
 };

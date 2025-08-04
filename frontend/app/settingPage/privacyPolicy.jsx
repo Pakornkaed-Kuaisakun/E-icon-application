@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     },
     versionText: {
         fontWeight: 'bold',
-        color: '#6b6b94',
+        color: '#9b9b9bff',
         fontSize: 16,
     },
     divider: {
@@ -105,6 +105,6 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         textAlign: 'justify',
         lineHeight: 28,
-        color: '#808080'
+        color: '#9b9b9bff'
     }
 });

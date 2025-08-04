@@ -9,7 +9,7 @@ export default function SettingHeader({ name, route}) {
     return (
         <View style={styles.header}>
             <TouchableOpacity onPress={() => navigation.navigate(route)}>
-                <Ionicons name="chevron-back" size={27} color="#6b6b94" />
+                <Ionicons name="chevron-back" size={27} color="#a3a3a3ff" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>{name}</Text>
         </View>
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 20,
         justifyContent: 'space-between',
-        borderColor: '#b6cdffff',
+        borderColor: '#5a6daa',
         borderBottomWidth: 1,
         paddingBottom: 12
     },

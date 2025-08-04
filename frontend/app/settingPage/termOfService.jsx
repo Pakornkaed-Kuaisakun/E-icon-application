@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     },
     versionText: {
         fontWeight: 'bold',
-        color: '#6b6b94',
+        color: '#808080',
         fontSize: 16,
     },
     divider: {

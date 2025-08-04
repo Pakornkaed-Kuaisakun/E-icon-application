@@ -26,8 +26,8 @@ export async function getTask(req, res) {
 
         // const getDailyTask = await db`SELECT * FROM usertask WHERE userid = ${req.params.userid} AND date = ${getFormattedDate()}`;
 
-        // return res.status(200).json({ dailyTask: getDailyTask });
-        return res.status(200).json({ message: 'Check for Daily Task Complete' });
+        return res.status(200).json({ dailyTask: getDailyTask });
+        // return res.status(200).json({ message: 'Check for Daily Task Complete' });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Internal Server Error' });

@@ -137,14 +137,14 @@ const styles = StyleSheet.create({
     },
     changePasswordButton: {
         marginTop: 40,
-        backgroundColor: '#1e90ff',
+        backgroundColor: '#5a6daa',
         paddingVertical: 12,
         paddingHorizontal: 30,
         borderRadius: 25,
     },
     signOutButton: {
         marginTop: 20,
-        backgroundColor: '#ff1e1eff',
+        backgroundColor: '#9f0000',
         paddingVertical: 12,
         paddingHorizontal: 30,
         borderRadius: 25,

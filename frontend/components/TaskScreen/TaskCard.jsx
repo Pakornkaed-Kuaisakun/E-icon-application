@@ -61,10 +61,10 @@ const styles = StyleSheet.create({
         borderRadius: 6,
     },
     accept: {
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#5a6daa',
     },
     reject: {
-        backgroundColor: '#F44336',
+        backgroundColor: '#9f0000',
     },
     buttonText: {
         color: '#fff',
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     badges: {
         paddingVertical: 5,
         paddingHorizontal: 10,
-        backgroundColor: '#52c41a',
+        backgroundColor: '#5a6daa',
         borderRadius: 25,
         fontSize: 14,
         fontWeight: 'bold',

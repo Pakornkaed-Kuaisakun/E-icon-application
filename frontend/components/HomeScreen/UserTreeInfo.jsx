@@ -14,14 +14,14 @@ export function UserTreeInfo({ level, type, points }) {
             <Text style={{ fontSize: 18, fontWeight: '600', color: COLORS.text }}>
                 Sapling - {type}
             </Text>
-            <Image source={require('@/assets/images/demo-tree-seed.png')} style={{ width: '50%', height: '50%', marginBottom: 7 }} />
+            <Image source={require('@/assets/images/sprout.png')} style={{ width: '60%', height: '40%', objectFit: 'contain', marginTop: 50 }} />
             <ProgressBar
                 progress={progress}
                 width={Dimensions.get('window').width - 80}
                 height={10}
                 color={COLORS.primary}
                 borderRadius={20}
-                unfilledColor="#e0e0e0"
+                unfilledColor="#ffffffff"
             />
             <Text style={{ textAlign: 'center', marginTop: 10, color: COLORS.text }}>
                 {points} / 100 Points
