@@ -89,12 +89,12 @@ export async function updateTaskStatus(req, res) {
             RETURNING *`;
 
         if (update.length === 0) {
-            return res.status(404).json({ message: 'No matching usertask to update' });
+            return res.status(200).json({ message: 'No matching usertask to update' });
         }
 
         const userData = await db`SELECT * FROM users WHERE userid = ${userid}`;
         if (userData.length === 0) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(200).json({ message: 'User not found' });
         }
 
         const updatePoint = await db`
