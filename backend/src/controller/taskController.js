@@ -103,7 +103,7 @@ export async function updateTaskStatus(req, res) {
             WHERE userid = ${userid} RETURNING *`;
 
         if (updatePoint) {
-            return res.status(200).json({ message: 'Update UserTask and Point successfully', updatePoint: updatePoint, updateUserTask: update });
+            return res.status(200).json({ message: 'Update UserTask and Point successfully' });
         } else {
             return res.status(500).json({ message: 'Update Point Failed' });
         }
