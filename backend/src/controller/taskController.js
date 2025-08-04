@@ -88,7 +88,7 @@ export async function updateTaskStatus(req, res) {
             const userData = await db`SELECT * FROM users WHERE userid = ${userid}`;
 
             if (userData) {
-                const updatePoint = await db`UPDATE users SET "growingPoint" = ${Number(Number(point) + Number(userData.growingPoint))} WHERE userid = ${userid}`;
+                const updatePoint = await db`UPDATE users SET "growingPoint" = ${Number(Number(point) + Number(userData[0].growingPoint))} WHERE userid = ${userid}`;
 
                 if (updatePoint) {
                     return res.status(200).json({ message: 'Update UserTask and Point successfully' });
@@ -98,6 +98,6 @@ export async function updateTaskStatus(req, res) {
             }
         }
     } catch (error) {
-        return res.status(500).json({ message: 'Internal Server Error' });
+        return res.status(500).json({ message: 'Internal Server Error', error });
     }
 }
