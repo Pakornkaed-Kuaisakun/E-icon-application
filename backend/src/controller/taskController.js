@@ -80,12 +80,22 @@ export async function getDailyTask(req, res) {
 }
 
 export async function updateTaskStatus(req, res) {
-    const { userid, taskid, imgPath, date } = req.body;
+    const { userid, taskid, imgPath, date, point } = req.body;
     try {
-        const update = await db`UPDATE usertask SET "proofImageURL" = ${imgPath}, "status" = ${'pending'} WHERE userid = ${userid} AND taskid = ${taskid} AND "date" = ${date}`;
+        const update = await db`UPDATE usertask SET "proofImageURL" = ${imgPath}, "status" = ${'completed'} WHERE userid = ${userid} AND taskid = ${taskid} AND "date" = ${date}`;
 
         if (update) {
-            return res.status(200).json({ message: 'Update Task Status - pending - Successfully' });
+            const userData = await db`SELECT * FROM users WHERE userid = ${userid}`;
+
+            if (userData) {
+                const updatePoint = await db`UPDATE users SET "growingPoint" = ${Number(Number(point) + Number(userData.growingPoint))} WHERE userid = ${userid}`;
+
+                if (updatePoint) {
+                    return res.status(200).json({ message: 'Update UserTask and Point successfully' });
+                } else {
+                    return res.status(500).json({ message: 'Update Point Failed' });
+                }
+            }
         }
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error' });

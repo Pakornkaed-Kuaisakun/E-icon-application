@@ -26,6 +26,7 @@ export default function Task() {
     const [showCamera, setShowCamera] = useState(false);
     const [currentTask, setCurrentTask] = useState({ userid: null, taskid: null, date: null })
     const [imgPath, setImgPath] = useState(null);
+    const [userData, setUserData] = useState(null);
 
     const getFormattedDate = () => {
         const today = new Date();
@@ -44,6 +45,7 @@ export default function Task() {
                 if (stored) {
                     const user = JSON.parse(stored);
                     setUserID(user.userid);
+                    setUserData(user);
                 }
             } catch (error) {
                 console.error('Error getting userInfo:', error);
@@ -79,12 +81,8 @@ export default function Task() {
 
     const handlePictureTaken = async (photoURI) => {
         setLoading(true);
-        // console.log('Photo URI: ', photoURI);
         await uploadPhotoToSupabase(photoURI);
-        // console.log(photoURI);
-        await updateDailyTaskStatus();
-        setShowCamera(false);
-        setLoading(false);
+        router.replace('task/dailyTask');
     }
 
     const uploadPhotoToSupabase = async (uri) => {
@@ -95,8 +93,6 @@ export default function Task() {
             });
             const fileBuffer = Uint8Array.from(atob(file), (c) => c.charCodeAt(0));
 
-            // console.log(fileBuffer);
-
             const fileName = `img_${currentTask.userid}_${currentTask.taskid}_${Date.now()}.jpg`;
 
             const { data, error } = await supabase.storage.from('e-icon-storage').upload(fileName, fileBuffer, { contentType: 'image/jpeg', upsert: true, cacheControl: "3600" });
@@ -106,41 +102,21 @@ export default function Task() {
                 return;
             } 
             const imagePath = String(BASE_SUPABASE_IMAGE_PATH) + String(data.fullPath);
-            // console.log(String(imagePath));
-            setImgPath(String(imagePath));
-        } catch (error) {
-            console.error('Upload Failed: ', error);
-        }
-    }
-    // console.log(imgPath);
-
-    const updateDailyTaskStatus = async () => {
-        try {
-            setLoading(true);
-            // console.log(imgPath, currentTask.taskid, currentTask.userid, today);
-            if(currentTask.userid.length === 0 || currentTask.taskid.length === 0 || imgPath.length === 0) {
-                // console.log(currentTask.userid, currentTask.taskid, imgPath);
-                setCurrentTask({ userid: null, taskid: null, date: null })
-                setImgPath('');
-                setMessage('some element is null');
-            }
-
-            const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imgPath, date: String(today) });
-
-            setLoading(false);
+            
+            const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imagePath, date: String(today), point: userData.growingPoint });
 
             if (res.status === 200 && res.data?.update?.length > 0) {
                 setCurrentTask({ userid: null, taskid: null, date: null });
                 setImgPath('');
-                router.replace('task/dailyTask');
             } else {
                 console.log('Something Error');
                 setCurrentTask({ userid: null, taskid: null, date: null });
                 setImgPath('');
                 setMessage('Something Error');
             }
+            
         } catch (error) {
-            setMessage('Error: ', error);
+            console.error('Upload Failed: ', error);
         }
     }
 
