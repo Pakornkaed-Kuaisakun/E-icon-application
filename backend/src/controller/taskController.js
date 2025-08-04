@@ -85,7 +85,7 @@ export async function updateTaskStatus(req, res) {
         const update = await db`
             UPDATE usertask 
             SET "proofImageURL" = ${imgPath}, "status" = ${status || 'completed'} 
-            WHERE userid = ${userid} AND taskid = ${taskid} AND "date" = ${date}
+            WHERE userid = ${userid} AND taskid = ${taskid} AND date = ${date}
             RETURNING *`;
 
         if (update.length === 0) {
@@ -103,7 +103,7 @@ export async function updateTaskStatus(req, res) {
             WHERE userid = ${userid}`;
 
         if (updatePoint) {
-            return res.status(200).json({ message: 'Update UserTask and Point successfully' });
+            return res.status(200).json({ message: 'Update UserTask and Point successfully', updatePoint: updatePoint, updateUserTask: update });
         } else {
             return res.status(500).json({ message: 'Update Point Failed' });
         }

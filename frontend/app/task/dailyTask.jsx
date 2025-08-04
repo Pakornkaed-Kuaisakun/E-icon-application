@@ -103,10 +103,11 @@ export default function Task() {
             } 
             const imagePath = String(BASE_SUPABASE_IMAGE_PATH) + String(data.fullPath);
             
-            const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imagePath, date: String(today), point: currentTask.point, status: "completed" });
+            const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imagePath, date: String(today), point: currentTask.point, status: 'completed' });
             // console.log(currentTask);
 
             if (res.status === 200) {
+                console.log('Success');
                 setCurrentTask({ userid: null, taskid: null, date: null, point: null });
                 setImgPath('');
                 router.replace('task/dailyTask');
