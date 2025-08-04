@@ -19,12 +19,14 @@ export async function getTask(req, res) {
 
         const today = getFormattedDate();
 
+        // check insert task
         const haveDailyTask = await db`
-            SELECT * FROM usertask 
-            WHERE userid = ${userid} AND date = ${today}
+        SELECT * FROM usertask 
+        WHERE userid = ${userid} AND date = ${today}
         `;
 
         if (haveDailyTask.length === 0) {
+            // ✅ Insert every task
             const insertTasks = [];
 
             for (const task of dailyTaskData) {
@@ -39,6 +41,7 @@ export async function getTask(req, res) {
             console.log('Add Daily Tasks:', insertTasks);
         }
 
+        // Pull all today tasks
         const getDailyTask = await db`
         SELECT * FROM usertask 
         WHERE userid = ${userid} AND date = ${today}
