@@ -1,15 +1,7 @@
 import { db } from "../config/db.js";
 
 export async function getTask(req, res) {
-    const { userid } = req.body;
-
-    const getFormattedDate = () => {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months start at 0
-        const dd = String(today.getDate()).padStart(2, '0');
-        return `${yyyy}-${mm}-${dd}`;
-    };
+    const { userid, date } = req.body;
 
     try {
         const dailyTaskData = await db`SELECT * FROM tasks WHERE tasktype = 'daily'`;
@@ -17,12 +9,10 @@ export async function getTask(req, res) {
         if (dailyTaskData.length === 0)
             return res.status(404).json({ message: 'No Daily Task' });
 
-        const today = getFormattedDate();
-
         // check insert task
         const haveDailyTask = await db`
         SELECT * FROM usertask 
-        WHERE userid = ${userid} AND date = ${today}
+        WHERE userid = ${userid} AND date = ${date}
         `;
 
         if (haveDailyTask.length === 0) {
@@ -32,7 +22,7 @@ export async function getTask(req, res) {
             for (const task of dailyTaskData) {
                 const inserted = await db`
                 INSERT INTO usertask (userid, taskid, date, status)
-                VALUES (${userid}, ${task.taskid.trim()}, ${today}, 'unfinished')
+                VALUES (${userid}, ${task.taskid.trim()}, ${date}, 'unfinished')
                 RETURNING *
                 `;
                 insertTasks.push(inserted[0]);
@@ -44,7 +34,7 @@ export async function getTask(req, res) {
         // Pull all today tasks
         const getDailyTask = await db`
         SELECT * FROM usertask 
-        WHERE userid = ${userid} AND date = ${today}
+        WHERE userid = ${userid} AND date = ${date}
         `;
 
         return res.status(200).json({ dailyTask: getDailyTask });
