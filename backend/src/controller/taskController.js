@@ -46,15 +46,8 @@ export async function getTask(req, res) {
 }
 
 export async function getDailyTask(req, res) {
-    const getFormattedDate = () => {
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months start at 0
-        const dd = String(today.getDate()).padStart(2, '0');
-        return `${yyyy}-${mm}-${dd}`;
-    };
     try {
-        const getDailyTask = await db`SELECT * FROM usertask WHERE userid = ${req.params.userid} AND date = ${getFormattedDate()}`;
+        const getDailyTask = await db`SELECT * FROM usertask WHERE userid = ${req.query.userid} AND date = ${req.query.date}`;
         if (getDailyTask.length === 0) return res.status(404).json({ message: 'Task not found' });
 
         const taskID = getDailyTask.map(row => row.taskid);
