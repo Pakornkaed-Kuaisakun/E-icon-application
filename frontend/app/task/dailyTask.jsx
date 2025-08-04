@@ -24,8 +24,18 @@ export default function Task() {
     const [taskResult, setTaskResult] = useState([]);
     const [taskStatus, setTaskStatus] = useState([]);
     const [showCamera, setShowCamera] = useState(false);
-    const [currentTask, setCurrentTask] = useState({ userid: null, taskid: null })
+    const [currentTask, setCurrentTask] = useState({ userid: null, taskid: null, date: null })
     const [imgPath, setImgPath] = useState(null);
+
+    const getFormattedDate = () => {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months start at 0
+        const dd = String(today.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    };
+
+    const today = getFormattedDate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -108,23 +118,23 @@ export default function Task() {
         try {
             if(currentTask.userid.length === 0 || currentTask.taskid.length === 0 || imgPath.length === 0) {
                 // console.log(currentTask.userid, currentTask.taskid, imgPath);
-                setCurrentTask({ userid: null, taskid: null })
+                setCurrentTask({ userid: null, taskid: null, date: null })
                 setImgPath('');
                 setMessage('some element is null');
             }
             // console.log(imgPath);
 
-            const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imgPath });
+            const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imgPath, date: today });
 
             console.log(res.data);
 
             if(res) {
-                setCurrentTask({ userid: null, taskid: null });
+                setCurrentTask({ userid: null, taskid: null, date: null });
                 setImgPath('');
                 router.replace('task/dailyTask');
             } else {
                 console.log('Something Error');
-                setCurrentTask({ userid: null, taskid: null });
+                setCurrentTask({ userid: null, taskid: null, date: null });
                 setImgPath('');
                 setMessage('Something Error');
             }
@@ -167,7 +177,7 @@ export default function Task() {
                                             taskid={task}
                                             status={matchingStatus}
                                             onTakePhoto={() => {
-                                                setCurrentTask({ userid: matchingStatus.userid, taskid: matchingStatus.taskid })
+                                                setCurrentTask({ userid: matchingStatus.userid, taskid: matchingStatus.taskid, date: today })
                                                 setShowCamera(true)
                                             }}
                                         />
