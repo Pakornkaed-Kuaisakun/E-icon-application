@@ -116,19 +116,20 @@ export default function Task() {
 
     const updateDailyTaskStatus = async () => {
         try {
+            setLoading(true);
+            // console.log(imgPath, currentTask.taskid, currentTask.userid, today);
             if(currentTask.userid.length === 0 || currentTask.taskid.length === 0 || imgPath.length === 0) {
                 // console.log(currentTask.userid, currentTask.taskid, imgPath);
                 setCurrentTask({ userid: null, taskid: null, date: null })
                 setImgPath('');
                 setMessage('some element is null');
             }
-            // console.log(imgPath);
 
             const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imgPath, date: String(today) });
 
-            console.log(res.data);
+            setLoading(false);
 
-            if(res) {
+            if (res.status === 200 && res.data?.update?.length > 0) {
                 setCurrentTask({ userid: null, taskid: null, date: null });
                 setImgPath('');
                 router.replace('task/dailyTask');
