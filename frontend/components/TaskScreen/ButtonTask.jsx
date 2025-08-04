@@ -16,7 +16,7 @@ export default function ButtonTask({ status, onTakePhoto, userid, taskid }) {
         >
           <Text style={{ color: '#5a668fff', fontWeight: 'bold' }}>Completed</Text>
         </View>
-      ) : status === 'x' ? (
+      ) : status === 'pending' ? (
         <View
           style={{
             backgroundColor: '#c5c5c5ff',

@@ -63,7 +63,7 @@ export default function Task() {
         try {
             const res = await axios.post(`${BASE_API_URL}/api/task/getTask`, { userid: userID, date: String(today) });
             const res_get = await axios.get(`${BASE_API_URL}/api/task/getDailyTask?userid=${userID}&date=${String(today)}`);
-            console.log(res_get.data.dailyTask[0]);
+            // console.log(res_get.data.dailyTask[0]);
             if (res_get.data.taskData.length > 0) {
                 setTaskResult(res_get.data.taskData);
                 setTaskStatus(res_get.data.dailyTask);
