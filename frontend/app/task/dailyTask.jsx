@@ -124,7 +124,7 @@ export default function Task() {
             }
             // console.log(imgPath);
 
-            const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imgPath, date: today });
+            const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imgPath, date: String(today) });
 
             console.log(res.data);
 

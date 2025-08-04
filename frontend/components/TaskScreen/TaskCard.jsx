@@ -17,7 +17,8 @@ export default function TaskCard({ taskid, status, onTakePhoto }) {
                     <Text>{status.date}</Text> */}
                 </View>
                 <View style={{}}>
-                    <ButtonTask status={status.status} onTakePhoto={onTakePhoto} userid={status.userid} taskid={status.taskid}  />
+                    <ButtonTask status={status.status} onTakePhoto={onTakePhoto} userid={status.userid} taskid={status.taskid} />
+                    {/* <Text>{status.userid}</Text> */}
                 </View>
             </View>
         </View>
