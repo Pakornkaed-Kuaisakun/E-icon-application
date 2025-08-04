@@ -28,19 +28,20 @@ export const BottomNavBar = () => {
     return (
         <View
             style={{
-                height: 100,
+                height: 110,
                 backgroundColor: COLORS.background,
                 flexDirection: 'row',
                 justifyContent: 'space-around',
                 alignItems: 'center',
                 borderTopColor: '#5A6DAA',
                 borderTopWidth: 1,
-                paddingBottom: 10,
+                paddingBottom: 20,
                 paddingHorizontal: 6,
                 shadowColor: '#000',
                 shadowOffset: { width: 0, height: -1 },
                 shadowOpacity: 0.1,
                 shadowRadius: 4,
+                // marginBottom: 10
             }}
         >
             {navItems.map((item) => {
