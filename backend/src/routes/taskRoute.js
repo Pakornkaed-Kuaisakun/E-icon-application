@@ -4,7 +4,7 @@ import { getTask, getDailyTask, updateTaskStatus } from '../controller/taskContr
 const router = express.Router();
 
 router.post('/getTask', getTask);
-router.get('/getDailyTask/:userid', getDailyTask);
+router.get('/getDailyTask', getDailyTask);
 router.post('/updateTaskStatus', updateTaskStatus);
 
 export default router;
