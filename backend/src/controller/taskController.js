@@ -82,24 +82,33 @@ export async function getDailyTask(req, res) {
 export async function updateTaskStatus(req, res) {
     const { userid, taskid, imgPath, date, point, status } = req.body;
     try {
-        const update = await db`UPDATE usertask SET "proofImageURL" = ${imgPath}, "status" = ${status} WHERE userid = ${userid} AND taskid = ${taskid} AND "date" = ${date}`;
+        const update = await db`
+            UPDATE usertask 
+            SET "proofImageURL" = ${imgPath}, "status" = ${status} 
+            WHERE userid = ${userid} AND taskid = ${taskid} AND "date" = ${date}
+            RETURNING *`;
 
-        if (update) {
-            const userData = await db`SELECT * FROM users WHERE userid = ${userid}`;
+        if (update.length === 0) {
+            return res.status(404).json({ message: 'No matching usertask to update' });
+        }
 
-            // console.log(userData[0]);
+        const userData = await db`SELECT * FROM users WHERE userid = ${userid}`;
+        if (userData.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-            if (userData) {
-                const updatePoint = await db`UPDATE users SET "growingPoint" = ${Number(Number(point) + Number(userData[0].growingPoint))} WHERE userid = ${userid}`;
+        const updatePoint = await db`
+            UPDATE users 
+            SET "growingPoint" = ${Number(point) + Number(userData[0].growingPoint)} 
+            WHERE userid = ${userid}`;
 
-                if (updatePoint) {
-                    return res.status(200).json({ message: 'Update UserTask and Point successfully' });
-                } else {
-                    return res.status(500).json({ message: 'Update Point Failed' });
-                }
-            }
+        if (updatePoint) {
+            return res.status(200).json({ message: 'Update UserTask and Point successfully' });
+        } else {
+            return res.status(500).json({ message: 'Update Point Failed' });
         }
     } catch (error) {
-        return res.status(500).json({ message: 'Internal Server Error', error });
+        console.error(error);
+        return res.status(500).json({ message: 'Internal Server Error', error: error.message });
     }
 }
