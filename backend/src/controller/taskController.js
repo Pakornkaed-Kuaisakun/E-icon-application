@@ -80,12 +80,14 @@ export async function getDailyTask(req, res) {
 }
 
 export async function updateTaskStatus(req, res) {
-    const { userid, taskid, imgPath, date, point } = req.body;
+    const { userid, taskid, imgPath, date, point, status } = req.body;
     try {
-        const update = await db`UPDATE usertask SET "proofImageURL" = ${imgPath}, "status" = ${'completed'} WHERE userid = ${userid} AND taskid = ${taskid} AND "date" = ${date}`;
+        const update = await db`UPDATE usertask SET "proofImageURL" = ${imgPath}, "status" = ${status} WHERE userid = ${userid} AND taskid = ${taskid} AND "date" = ${date}`;
 
         if (update) {
             const userData = await db`SELECT * FROM users WHERE userid = ${userid}`;
+
+            // console.log(userData[0]);
 
             if (userData) {
                 const updatePoint = await db`UPDATE users SET "growingPoint" = ${Number(Number(point) + Number(userData[0].growingPoint))} WHERE userid = ${userid}`;

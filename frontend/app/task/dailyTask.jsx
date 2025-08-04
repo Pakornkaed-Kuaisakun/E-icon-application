@@ -24,7 +24,7 @@ export default function Task() {
     const [taskResult, setTaskResult] = useState([]);
     const [taskStatus, setTaskStatus] = useState([]);
     const [showCamera, setShowCamera] = useState(false);
-    const [currentTask, setCurrentTask] = useState({ userid: null, taskid: null, date: null })
+    const [currentTask, setCurrentTask] = useState({ userid: null, taskid: null, date: null, point: null })
     const [imgPath, setImgPath] = useState(null);
     const [userData, setUserData] = useState(null);
 
@@ -103,15 +103,15 @@ export default function Task() {
             } 
             const imagePath = String(BASE_SUPABASE_IMAGE_PATH) + String(data.fullPath);
             
-            const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imagePath, date: String(today), point: userData.growingPoint });
-            console.log('Pass');
+            const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imagePath, date: String(today), point: currentTask.point, status: 'completed' });
+            // console.log(currentTask);
 
-            if (res.status === 200 && res.data?.update?.length > 0) {
-                setCurrentTask({ userid: null, taskid: null, date: null });
+            if (res.status === 200) {
+                setCurrentTask({ userid: null, taskid: null, date: null, point: null });
                 setImgPath('');
             } else {
                 console.log('Something Error');
-                setCurrentTask({ userid: null, taskid: null, date: null });
+                setCurrentTask({ userid: null, taskid: null, date: null, point: null });
                 setImgPath('');
                 setMessage('Something Error');
             }
@@ -155,7 +155,7 @@ export default function Task() {
                                             taskid={task}
                                             status={matchingStatus}
                                             onTakePhoto={() => {
-                                                setCurrentTask({ userid: matchingStatus.userid, taskid: matchingStatus.taskid, date: today })
+                                                setCurrentTask({ userid: matchingStatus.userid, taskid: matchingStatus.taskid, date: today, point: task.taskpoint })
                                                 setShowCamera(true)
                                             }}
                                         />
