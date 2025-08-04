@@ -12,9 +12,9 @@ export default function TaskCard({ taskid, status, onTakePhoto }) {
                 <View style={styles.info}>
                     <Text style={styles.name}>{taskid.taskname}</Text>
                     <Text style={styles.username}>Point: {taskid.taskpoint}</Text>
-                    <Text>{status.taskid}</Text>
+                    {/* <Text>{status.taskid}</Text>
                     <Text>{status.userid}</Text>
-                    <Text>{status.date}</Text>
+                    <Text>{status.date}</Text> */}
                 </View>
                 <View style={{}}>
                     <ButtonTask status={status.status} onTakePhoto={onTakePhoto} userid={status.userid} taskid={status.taskid}  />

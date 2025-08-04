@@ -82,7 +82,7 @@ export async function getDailyTask(req, res) {
 export async function updateTaskStatus(req, res) {
     const { userid, taskid, imgPath, date } = req.body;
     try {
-        const update = await db`UPDATE usertask SET "proofImageURL" = ${imgPath}, "status" = 'unfinished' WHERE userid = ${userid} AND taskid = ${taskid} AND date = ${date}`;
+        const update = await db`UPDATE usertask SET "proofImageURL" = ${imgPath}, "status" = 'pending' WHERE userid = ${userid} AND taskid = ${taskid} AND date = ${date}`;
 
         if (update) {
             return res.status(200).json({ message: 'Update Task Status - pending - Successfully' });

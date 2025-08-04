@@ -41,7 +41,7 @@ export default function Photo() {
             setTaskResult([]);
             setUserTask([]);
             setUserData([]);
-            setMessage('No Today Task to Confirm');
+            setMessage('No photo yet')
         } finally {
             setLoading(false);
         }
