@@ -24,7 +24,7 @@ export default function Task() {
     const [taskResult, setTaskResult] = useState([]);
     const [taskStatus, setTaskStatus] = useState([]);
     const [showCamera, setShowCamera] = useState(false);
-    const [currentTask, setCurrentTask] = useState({ userid: null, taskid: null, date: null, point: null })
+    const [currentTask, setCurrentTask] = useState({ userid: null, taskid: null, date: null, point: null, status: 'completed' })
     const [imgPath, setImgPath] = useState(null);
     const [userData, setUserData] = useState(null);
 
@@ -103,17 +103,17 @@ export default function Task() {
             } 
             const imagePath = String(BASE_SUPABASE_IMAGE_PATH) + String(data.fullPath);
             
-            const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imagePath, date: String(today), point: currentTask.point, status: 'completed' });
-            // console.log(currentTask);
+            const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imagePath, date: String(today), point: currentTask.point, status: currentTask.status });
+            console.log(res);
 
             if (res.status === 200) {
                 console.log('Success');
-                setCurrentTask({ userid: null, taskid: null, date: null, point: null });
+                setCurrentTask({ userid: null, taskid: null, date: null, point: null, status: 'completed' });
                 setImgPath('');
                 router.replace('task/dailyTask');
             } else {
                 console.log('Something Error');
-                setCurrentTask({ userid: null, taskid: null, date: null, point: null });
+                setCurrentTask({ userid: null, taskid: null, date: null, point: null, status: 'completed' });
                 setImgPath('');
                 setMessage('Something Error');
             }
@@ -157,7 +157,7 @@ export default function Task() {
                                             taskid={task}
                                             status={matchingStatus}
                                             onTakePhoto={() => {
-                                                setCurrentTask({ userid: matchingStatus.userid, taskid: matchingStatus.taskid, date: today, point: task.taskpoint })
+                                                setCurrentTask({ userid: matchingStatus.userid, taskid: matchingStatus.taskid, date: today, point: task.taskpoint, status: 'completed' })
                                                 setShowCamera(true)
                                             }}
                                         />

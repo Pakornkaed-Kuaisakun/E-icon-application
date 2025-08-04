@@ -100,7 +100,7 @@ export async function updateTaskStatus(req, res) {
         const updatePoint = await db`
             UPDATE users 
             SET "growingPoint" = ${Number(Number(point) + Number(userData[0].growingPoint))} 
-            WHERE userid = ${userid}`;
+            WHERE userid = ${userid} RETURNING *`;
 
         if (updatePoint) {
             return res.status(200).json({ message: 'Update UserTask and Point successfully', updatePoint: updatePoint, updateUserTask: update });
