@@ -1,4 +1,4 @@
-import { View, Text, PanResponder, Animated, Dimensions } from 'react-native';
+import { View, Text, PanResponder, Animated, Dimensions, TouchableOpacity, Modal, StyleSheet, Image } from 'react-native';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { useAuth } from '@/assets/lib/auth';
@@ -22,6 +22,8 @@ export default function Index() {
 
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [getReward, setGetReward] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
 
     const fetchUserInfo = useCallback(async () => {
         try {
@@ -54,7 +56,8 @@ export default function Index() {
                 currentTreePoint: userInfo.treePoint,
                 currentGrowingPoint: userInfo.growingPoint,
             });
-            console.log(res.data);
+            // console.log(res.data.reward);
+            setGetReward(res.data.reward);
             fetchUserInfo();
         } catch (error) {
             console.error('Grow Tree Error:', error);
@@ -116,16 +119,102 @@ export default function Index() {
                         type={userInfo.treeType}
                         points={userInfo.treePoint}
                     />
-                    <WaterButton
-                        disabled={userInfo.growingPoint === 0 || loading}
-                        onPress={growTree}
-                    />
+                    {getReward ? (
+                        <TouchableOpacity onPress={() => setModalVisible(true)} style={{
+                            marginTop: 20,
+                            padding: 15,
+                            paddingHorizontal: 23,
+                            backgroundColor: '#0088FF',
+                            borderRadius: 30,
+                            flexDirection: 'row',
+                            alignItems: 'center'
+                        }}>
+                            <Text style={{ color: 'white' }}>Reward</Text>
+                        </TouchableOpacity>
+                    ) : (
+                        <WaterButton disabled={userInfo.growingPoint === 0 || loading} onPress={growTree} />
+                    )}
                     <Text style={{ marginTop: 15 }}>
                         Point you held: {userInfo.growingPoint} point
                     </Text>
                 </View>
                 <BottomNavBar />
             </Animated.View>
+            <Modal
+                transparent
+                animationType="fade"
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContainer}>
+                        <Text style={styles.title}>Congratulation!</Text>
+                        <Text style={styles.text}>You have successfully grown a tree!</Text>
+                        <Image
+                                source={require('../assets/images/plantTreeImg.png')}
+                                style={styles.image}
+                                resizeMode="cover"
+                        />
+                        <Text style={styles.text}>The larch tree you have grown</Text>
+                        <Text style={styles.text}>will be plant in Turkey.</Text>
+                        <TouchableOpacity style={styles.button} onPress={() => { setModalVisible(false); setGetReward(false); }}>
+                            <Text style={styles.buttonText}>Checked</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: "rgba(0, 0, 0, 0.6)",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    modalContainer: {
+        width: Dimensions.get('screen').width * 0.8,
+        backgroundColor: "#DFEAFF",
+        borderRadius: 20,
+        padding: 20,
+        alignItems: "center",
+        position: 'absolute'
+    },
+    image: {
+        width: 270,
+        height: 200,
+        marginBottom: 20,
+        borderRadius: 6,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 12,
+        color: "#5A6DAA",
+    },
+    message: {
+        fontSize: 20,
+        textAlign: "center",
+        marginBottom: 20,
+        color: "#5A6DAA",
+    },
+    text: {
+        fontSize: 16,
+        textAlign: "center",
+        marginBottom: 15,
+        color: "#5A6DAA",
+        marginTop: 3
+    },
+    button: {
+        backgroundColor: "#5A6DAA",
+        paddingVertical: 10,
+        paddingHorizontal: 24,
+        borderRadius: 50,
+    },
+    buttonText: {
+        color: "white",
+        fontSize: 16,
+    },
+});

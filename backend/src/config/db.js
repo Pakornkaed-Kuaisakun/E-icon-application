@@ -1,8 +1,14 @@
 import {neon} from '@neondatabase/serverless';
+import { Pool } from 'pg';
 import 'dotenv/config';
 
 // Create Database connection
 export const db = neon(process.env.DATABASE_URL);
+
+export const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+});
 
 export async function initDB() {
     try {

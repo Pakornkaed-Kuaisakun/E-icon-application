@@ -21,7 +21,7 @@ export default function LoginScreen() {
         setLoading(true);
         try {
             setError('');
-            const response = await fetch('$;{ BASE_API_URL } / api / auth / signin', {
+            const response = await fetch(`${BASE_API_URL}/api/auth/signin`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
