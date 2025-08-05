@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
 
             const savedMessage = result[0];
 
-            io.to(msg).emit("receive_message", savedMessage);
+            io.emit("receive_message", savedMessage);
         } catch (error) {
             console.error(error);
         }

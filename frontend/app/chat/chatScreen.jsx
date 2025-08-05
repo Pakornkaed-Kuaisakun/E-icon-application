@@ -65,14 +65,9 @@ export default function ChatScreen() {
     }, [userID, friendId]);
 
     useEffect(() => {
-        if (!socket || !userID || !friendId){ return; }
+        if (!socket || !userID || !friendId) return;
 
         const handleReceiveMessage = (msg) => {
-            if(!msg) {
-                console.log("Received message: ", msg);
-                return;
-            }
-
             if (
                 (msg.senderid === userID && msg.receiverid === friendId) ||
                 (msg.senderid === friendId && msg.receiverid === userID)
@@ -84,7 +79,8 @@ export default function ChatScreen() {
         socket.on("receive_message", handleReceiveMessage);
 
         return () => socket.off("receive_message", handleReceiveMessage);
-    }, [userID, friendId]);
+    }, [socket, userID, friendId]);
+
 
 
     const sendMessage = () => {
@@ -95,7 +91,7 @@ export default function ChatScreen() {
                 receiverID: friendId,
                 message: message,
             };
-            console.log(JSON.stringify(msg));
+            // console.log(JSON.stringify(msg));
             socket.emit("send_message", JSON.stringify(msg));
             setMessage("");
         }
@@ -119,7 +115,7 @@ export default function ChatScreen() {
                 <Text>Back</Text>
             </TouchableOpacity>
             <FlatList
-                data={[...history, ...chat]}
+                data={chat}
                 keyExtractor={(item, index) => item.id?.toString() ?? index.toString()}
                 renderItem={({ item }) => (
                     <View
