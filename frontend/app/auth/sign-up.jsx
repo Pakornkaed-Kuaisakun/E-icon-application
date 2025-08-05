@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../../constants/colors'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import BASE_API_URL from '../../constants/path'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function SignUpScreen() {
 
@@ -23,7 +24,7 @@ export default function SignUpScreen() {
     const handleRegistry = async () => {
         setLoading(true);
         try {
-            
+
             setError(''); // Clear previous errors
             setSuccess(''); // Clear previous success messages
             const response = await fetch(`${BASE_API_URL}/api/auth/signup`, {
@@ -35,9 +36,25 @@ export default function SignUpScreen() {
             if (response.ok) {
                 setSuccess('Registration successful! Please log in.');
 
-                setTimeout(() => {
-                    router.replace('/auth/sign-in');
-                }, 1000);
+                setError(''); // Clear previous errors
+                const response = await fetch(`${BASE_API_URL}/api/auth/signin`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailAddress, password: password }),
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    //console.log('Login successful:', data);
+                    // navigation.navigate("Home") or store token
+
+                    await AsyncStorage.setItem('userToken', data.token); // Store the token
+                    // Optionally, you can store user info
+                    await AsyncStorage.setItem('userInfo', JSON.stringify(data.user));
+
+                    router.replace('/'); // Redirect to the home page
+                } else {
+                    setError(data.message || 'Login failed');
+                }
             } else {
                 setError(data.message || 'Signup failed');
             }
@@ -99,7 +116,7 @@ export default function SignUpScreen() {
                         <Ionicons name={togglePasswordVisibility ? "eye-off" : "eye"} size={20} color="gray" />
                     </TouchableOpacity>
                 </View>
-                
+
                 <View>
                     <TextInput
                         style={[styles.input, error && styles.errorInput]}
@@ -113,7 +130,7 @@ export default function SignUpScreen() {
                         <Ionicons name={confirmPasswordVisibility ? "eye-off" : "eye"} size={20} color="gray" />
                     </TouchableOpacity>
                 </View>
-                
+
                 <TouchableOpacity style={styles.button} disabled={loading} onPress={handleRegistry}>
                     <Text style={styles.buttonText}> {loading ? <ActivityIndicator size="small" color="#fff" /> : 'Sign up'} </Text>
                 </TouchableOpacity>

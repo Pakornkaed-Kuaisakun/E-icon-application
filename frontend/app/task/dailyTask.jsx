@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Dimensions, Animated, PanResponder } from 'react-native'
+import { View, Text, ScrollView, Dimensions, Animated, PanResponder, Modal } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@/assets/lib/auth';
 import { useNavigation, useRouter } from 'expo-router'
@@ -31,6 +31,7 @@ export default function Task() {
     const [currentTask, setCurrentTask] = useState({ userid: null, taskid: null, date: null, point: null, status: 'completed' })
     const [imgPath, setImgPath] = useState(null);
     const [userData, setUserData] = useState(null);
+    const [modalVisible, setModelVisible] = useState(false);
 
     const getFormattedDate = () => {
         const today = new Date();
@@ -112,7 +113,7 @@ export default function Task() {
             console.log(res.data);
 
             if (res.status === 200) {
-                console.log('Success');
+                // console.log('Success');
                 setCurrentTask({ userid: null, taskid: null, date: null, point: null, status: 'completed' });
                 setImgPath('');
                 router.replace('task/dailyTask');
