@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
         const { senderID, receiverID, message } = JSON.parse(data);
 
         try {
-            const result = await db`INSERT INTO messages (senderid, receiverid, message) VALUES (${senderID}, ${receiverID}, ${message})`;
+            const result = await db`INSERT INTO messages (senderid, receiverid, message) VALUES (${senderID}, ${receiverID}, ${message}) RETURNING *`;
 
             console.log(result);
 
