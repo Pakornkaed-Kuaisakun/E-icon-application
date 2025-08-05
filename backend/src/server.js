@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
 
             // console.log(result);
 
-            const savedMessage = result[0].message;
+            const savedMessage = result[0];
 
             io.emit("receive_message", savedMessage);
         } catch (error) {

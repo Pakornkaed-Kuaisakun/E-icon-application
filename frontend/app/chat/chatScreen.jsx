@@ -45,11 +45,12 @@ export default function ChatScreen() {
 
     useEffect(() => {
         socket.on("receive_message", (msg) => {
+            console.log(msg);
             if (
                 (msg.senderid === userID && msg.receiverid === friendId) ||
                 (msg.senderid === friendId && msg.receiverid === userID)
             ) {
-                setChat((prev) => [...prev, msg]);
+                setChat((prev) => [...prev, msg.message]);
             }
         });
 
@@ -63,7 +64,7 @@ export default function ChatScreen() {
                 receiverID: friendId,
                 message: message,
             };
-            console.log(JSON.stringify(msg));
+            // console.log(JSON.stringify(msg));
             socket.emit("send_message", JSON.stringify(msg));
             setMessage("");
         }
