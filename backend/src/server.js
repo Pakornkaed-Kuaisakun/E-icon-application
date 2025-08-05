@@ -47,9 +47,9 @@ io.on('connection', (socket) => {
         try {
             const result = await db`INSERT INTO messages (senderid, receiverid, message) VALUES (${senderID}, ${receiverID}, ${message}) RETURNING *`;
 
-            console.log(result);
+            // console.log(result);
 
-            const savedMessage = result.rows[0];
+            const savedMessage = result[0].message;
 
             io.emit("receive_message", savedMessage);
         } catch (error) {
