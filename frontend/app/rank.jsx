@@ -1,7 +1,7 @@
-import { View, Text, ScrollView, Dimensions } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { View, Text, ScrollView, Dimensions, PanResponder, Animated } from 'react-native'
+import React, { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@/assets/lib/auth';
-import { useRouter } from 'expo-router'
+import { useNavigation, useRouter } from 'expo-router'
 import { TopNavBarGlobal } from '@/components/Navigation/TopNavbarGlobal';
 import { BottomNavBar } from '@/components/Navigation/BottomNavBar';
 import LoadingScreen from '@/components/LoadingScreen';
@@ -13,6 +13,10 @@ import RankUserCard from '@/components/RankScreen/RankUserCard';
 export default function Rank() {
     const authentication = useAuth();
     const router = useRouter();
+    const navigation = useNavigation();
+
+    const translateX = useRef(new Animated.Value(0)).current;
+    const screenWidth = Dimensions.get('window').width;
 
     const [userID, setUserID] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -57,6 +61,47 @@ export default function Rank() {
         }
     };
 
+    // ✅ Slide Gesture Handler
+    const panResponder = useRef(
+        PanResponder.create({
+            onMoveShouldSetPanResponder: (_, gesture) => Math.abs(gesture.dx) > 20,
+            onPanResponderMove: (_, gesture) => {
+                if (gesture.dx < 0) {
+                    translateX.setValue(gesture.dx);
+                }
+            },
+            onPanResponderRelease: (_, gesture) => {
+                if (gesture.dx < -50) {
+                    // Swipe Left → Go to /rank
+                    Animated.timing(translateX, {
+                        toValue: -screenWidth,
+                        duration: 270,
+                        useNativeDriver: true,
+                    }).start(() => {
+                        translateX.setValue(0); // reset for next time
+                        navigation.navigate('friends/friend');
+                    });
+                } else if (gesture.dx > 50) {
+                    // Swipe Right → Go to /index
+                    Animated.timing(translateX, {
+                        toValue: screenWidth,
+                        duration: 270,
+                        useNativeDriver: true,
+                    }).start(() => {
+                        translateX.setValue(0);
+                        navigation.navigate('task/dailyTask');
+                    });
+                } else {
+                    // Cancelled swipe → spring back
+                    Animated.spring(translateX, {
+                        toValue: 0,
+                        useNativeDriver: true,
+                    }).start();
+                }
+            },
+        })
+    ).current;
+
     useEffect(() => {
         if (userID) {
             fetchRankData();
@@ -75,21 +120,24 @@ export default function Rank() {
 
     return (
         <View style={{ flex: 1, backgroundColor: '#ffffffff' }}>
-            <TopNavBarGlobal pageName="Rank" />
-            <View style={{ flex: 1, alignItems: 'center' }}>
-                <ScrollView contentContainerStyle={{ width: Dimensions.get('window').width - 10 }}>
-                    {userResult && userResult.length > 0 ? (
-                        userResult.map((userid, index) => (
-                            <RankUserCard key={userid.userid || index} userid={userid} index={index} />
-                        ))
-                    ) : (
-                        <Text style={{ textAlign: 'center', marginTop: 20, color: '#888', fontSize: 18 }}>
-                            {message || 'Loading...'}
-                        </Text>
-                    )}
-                </ScrollView>
-            </View>
-            <BottomNavBar />
+            <Animated.View {...panResponder.panHandlers}
+                style={[{ flex: 1, backgroundColor: '#ffffff', transform: [{ translateX }] }]}>
+                <TopNavBarGlobal pageName="Rank" />
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                    <ScrollView contentContainerStyle={{ width: Dimensions.get('window').width - 10 }}>
+                        {userResult && userResult.length > 0 ? (
+                            userResult.map((userid, index) => (
+                                <RankUserCard key={userid.userid || index} userid={userid} index={index} />
+                            ))
+                        ) : (
+                            <Text style={{ textAlign: 'center', marginTop: 20, color: '#888', fontSize: 18 }}>
+                                {message || 'Loading...'}
+                            </Text>
+                        )}
+                    </ScrollView>
+                </View>
+                <BottomNavBar />
+            </Animated.View>
         </View>
     );
 }

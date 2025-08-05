@@ -1,5 +1,5 @@
-import { View, Text, ScrollView, Dimensions } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { View, Text, ScrollView, Dimensions, Animated, PanResponder } from 'react-native'
+import React, { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@/assets/lib/auth';
 import { useRouter } from 'expo-router'
 import { TopNavBarGlobal } from '@/components/Navigation/TopNavbarGlobal';
@@ -14,6 +14,9 @@ import { loadavg } from 'os';
 export default function Photo() {
     const authentication = useAuth();
     const router = useRouter();
+
+    const translateX = useRef(new Animated.Value(0)).current;
+    const screenWidth = Dimensions.get('window').width;
 
     const [userID, setUserID] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -62,6 +65,47 @@ export default function Photo() {
         }
     }, [userID]);
 
+    // ✅ Slide Gesture Handler
+    const panResponder = useRef(
+        PanResponder.create({
+            onMoveShouldSetPanResponder: (_, gesture) => Math.abs(gesture.dx) > 20,
+            onPanResponderMove: (_, gesture) => {
+                if (gesture.dx < 0) {
+                    translateX.setValue(gesture.dx);
+                }
+            },
+            onPanResponderRelease: (_, gesture) => {
+                if (gesture.dx < -50) {
+                    // Swipe Left → Go to /rank
+                    Animated.timing(translateX, {
+                        toValue: -screenWidth,
+                        duration: 300,
+                        useNativeDriver: true,
+                    }).start(() => {
+                        translateX.setValue(0); // reset for next time
+                        router.push('/rank');
+                    });
+                } else if (gesture.dx > 50) {
+                    // Swipe Right → Go to /index
+                    Animated.timing(translateX, {
+                        toValue: screenWidth,
+                        duration: 300,
+                        useNativeDriver: true,
+                    }).start(() => {
+                        translateX.setValue(0);
+                        router.push('/index');
+                    });
+                } else {
+                    // Cancelled swipe → spring back
+                    Animated.spring(translateX, {
+                        toValue: 0,
+                        useNativeDriver: true,
+                    }).start();
+                }
+            },
+        })
+    ).current;
+
 
     useEffect(() => {
         if (authentication === false) {
@@ -75,15 +119,18 @@ export default function Photo() {
 
     return (
         <View style={{ flex: 1, backgroundColor: '#ffffffff' }}>
-            <TopNavBarGlobal pageName="Photo" />
-            <View style={{ flex: 1, alignItems: 'center' }}>
-                {loading ? (
-                    <LoadingScreen />
-                ) : (
-                    <PhotoScreen imageURLs={image} />
-                )}
-            </View>
-            <BottomNavBar />
+            <Animated.View {...panResponder.panHandlers}
+                style={[{ flex: 1, backgroundColor: '#ffffff', transform: [{ translateX }] }]}>
+                <TopNavBarGlobal pageName="Photo" />
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                    {loading ? (
+                        <LoadingScreen />
+                    ) : (
+                        <PhotoScreen imageURLs={image} />
+                    )}
+                </View>
+                <BottomNavBar />
+            </Animated.View>
         </View>
     );
 }

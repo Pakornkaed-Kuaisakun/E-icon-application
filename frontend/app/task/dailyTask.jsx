@@ -1,7 +1,7 @@
-import { View, Text, ScrollView, Dimensions } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { View, Text, ScrollView, Dimensions, Animated, PanResponder } from 'react-native'
+import React, { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@/assets/lib/auth';
-import { useRouter } from 'expo-router'
+import { useNavigation, useRouter } from 'expo-router'
 import { TopNavBarGlobal } from '@/components/Navigation/TopNavbarGlobal';
 import { BottomNavBar } from '@/components/Navigation/BottomNavBar';
 import LoadingScreen from '@/components/LoadingScreen';
@@ -17,6 +17,10 @@ import * as FileSystem from 'expo-file-system';
 export default function Task() {
     const authentication = useAuth();
     const router = useRouter();
+    const navigation = useNavigation();
+
+    const translateX = useRef(new Animated.Value(0)).current;
+    const screenWidth = Dimensions.get('window').width;
 
     const [userID, setUserID] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -97,12 +101,12 @@ export default function Task() {
 
             const { data, error } = await supabase.storage.from('e-icon-storage').upload(fileName, fileBuffer, { contentType: 'image/jpeg', upsert: true, cacheControl: "3600" });
 
-            if(error) {
+            if (error) {
                 console.error('Upload error: ', error);
                 return;
-            } 
+            }
             const imagePath = String(BASE_SUPABASE_IMAGE_PATH) + String(data.fullPath);
-            
+
             const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imagePath, date: String(today), point: currentTask.point, status: currentTask.status });
 
             console.log(res.data);
@@ -118,7 +122,7 @@ export default function Task() {
                 setImgPath('');
                 setMessage('Something Error');
             }
-            
+
         } catch (error) {
             console.error('Upload Failed: ', error);
         }
@@ -129,6 +133,47 @@ export default function Task() {
             fetchTaskData();
         }
     }, [userID]);
+
+    // ✅ Slide Gesture Handler
+    const panResponder = useRef(
+        PanResponder.create({
+            onMoveShouldSetPanResponder: (_, gesture) => Math.abs(gesture.dx) > 20,
+            onPanResponderMove: (_, gesture) => {
+                if (gesture.dx < 0) {
+                    translateX.setValue(gesture.dx);
+                }
+            },
+            onPanResponderRelease: (_, gesture) => {
+                if (gesture.dx < -50) {
+                    // Swipe Left → Go to /rank
+                    Animated.timing(translateX, {
+                        toValue: -screenWidth,
+                        duration: 270,
+                        useNativeDriver: true,
+                    }).start(() => {
+                        translateX.setValue(0); // reset for next time
+                        navigation.navigate('rank');
+                    });
+                } else if (gesture.dx > 50) {
+                    // Swipe Right → Go to /index
+                    Animated.timing(translateX, {
+                        toValue: screenWidth,
+                        duration: 270,
+                        useNativeDriver: true,
+                    }).start(() => {
+                        translateX.setValue(0);
+                        navigation.navigate('index');
+                    });
+                } else {
+                    // Cancelled swipe → spring back
+                    Animated.spring(translateX, {
+                        toValue: 0,
+                        useNativeDriver: true,
+                    }).start();
+                }
+            },
+        })
+    ).current;
 
     useEffect(() => {
         if (authentication === false) {
@@ -142,38 +187,41 @@ export default function Task() {
 
     return (
         <View style={{ flex: 1, backgroundColor: '#ffffffff' }}>
-            <TopNavBarGlobal pageName="Task" />
-            <View style={{ flex: 1, alignItems: 'center', marginTop: 0 }}>
-                {showCamera ? (
-                    <CameraScreen onPictureTaken={handlePictureTaken} onClose={() => setShowCamera(false)} />
-                ) : (
-                    <View style={{ flex: 1, alignItems: 'center', marginTop: 0 }}>
-                        <ScrollView contentContainerStyle={{ width: Dimensions.get('window').width - 15, marginTop: 13 }}>
-                            {taskResult && taskResult.length > 0 ? (
-                                taskResult.map((task) => {
-                                    const matchingStatus = taskStatus.find(status => status.taskid === task.taskid);
-                                    return (
-                                        <TaskCard
-                                            key={task.taskid}
-                                            taskid={task}
-                                            status={matchingStatus}
-                                            onTakePhoto={() => {
-                                                setCurrentTask({ userid: matchingStatus.userid, taskid: matchingStatus.taskid, date: today, point: task.taskpoint, status: "completed" })
-                                                setShowCamera(true)
-                                            }}
-                                        />
-                                    );
-                                })
-                            ) : (
-                                <Text style={{ textAlign: 'center', marginTop: 20, color: '#888', fontSize: 18 }}>
-                                    {message || 'Loading...'}
-                                </Text>
-                            )}
-                        </ScrollView>
-                    </View>
-                )}
-            </View>
-            <BottomNavBar />
+            <Animated.View {...panResponder.panHandlers}
+                style={[{ flex: 1, backgroundColor: '#ffffff', transform: [{ translateX }] }]}>
+                <TopNavBarGlobal pageName="Task" />
+                <View style={{ flex: 1, alignItems: 'center', marginTop: 0 }}>
+                    {showCamera ? (
+                        <CameraScreen onPictureTaken={handlePictureTaken} onClose={() => setShowCamera(false)} />
+                    ) : (
+                        <View style={{ flex: 1, alignItems: 'center', marginTop: 0 }}>
+                            <ScrollView contentContainerStyle={{ width: Dimensions.get('window').width - 15, marginTop: 13 }}>
+                                {taskResult && taskResult.length > 0 ? (
+                                    taskResult.map((task) => {
+                                        const matchingStatus = taskStatus.find(status => status.taskid === task.taskid);
+                                        return (
+                                            <TaskCard
+                                                key={task.taskid}
+                                                taskid={task}
+                                                status={matchingStatus}
+                                                onTakePhoto={() => {
+                                                    setCurrentTask({ userid: matchingStatus.userid, taskid: matchingStatus.taskid, date: today, point: task.taskpoint, status: "completed" })
+                                                    setShowCamera(true)
+                                                }}
+                                            />
+                                        );
+                                    })
+                                ) : (
+                                    <Text style={{ textAlign: 'center', marginTop: 20, color: '#888', fontSize: 18 }}>
+                                        {message || 'Loading...'}
+                                    </Text>
+                                )}
+                            </ScrollView>
+                        </View>
+                    )}
+                </View>
+                <BottomNavBar />
+            </Animated.View>
         </View >
     );
 }

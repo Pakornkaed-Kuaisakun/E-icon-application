@@ -1,7 +1,7 @@
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, PanResponder, Animated, Dimensions } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/assets/lib/auth';
-import { useRouter } from 'expo-router';
+import { useRouter, useNavigation } from 'expo-router';
 import { TopNavBarGlobal } from '@/components/Navigation/TopNavbarGlobal';
 import { BottomNavBar } from '@/components/Navigation/BottomNavBar';
 import LoadingScreen from '@/components/LoadingScreen';
@@ -17,6 +17,10 @@ import { AddFriendCard } from '@/components/FriendScreen/AddFriendCard';
 export default function Friend() {
     const authentication = useAuth();
     const router = useRouter();
+    const navigation = useNavigation();
+
+    const translateX = useRef(new Animated.Value(0)).current;
+    const screenWidth = Dimensions.get('window').width;
 
     const [searchTerm, setSearchTerm] = useState('');
     const [searching, setSearching] = useState(false);
@@ -96,6 +100,47 @@ export default function Friend() {
         }
     };
 
+    // ✅ Slide Gesture Handler
+    const panResponder = useRef(
+        PanResponder.create({
+            onMoveShouldSetPanResponder: (_, gesture) => Math.abs(gesture.dx) > 20,
+            onPanResponderMove: (_, gesture) => {
+                if (gesture.dx < 0) {
+                    translateX.setValue(gesture.dx);
+                }
+            },
+            onPanResponderRelease: (_, gesture) => {
+                if (gesture.dx < -50) {
+                    // Swipe Left → Go to /rank
+                    Animated.timing(translateX, {
+                        toValue: -screenWidth,
+                        duration: 270,
+                        useNativeDriver: true,
+                    }).start(() => {
+                        translateX.setValue(0); // reset for next time
+                        navigation.navigate('photo');
+                    });
+                } else if (gesture.dx > 50) {
+                    // Swipe Right → Go to /index
+                    Animated.timing(translateX, {
+                        toValue: screenWidth,
+                        duration: 270,
+                        useNativeDriver: true,
+                    }).start(() => {
+                        translateX.setValue(0);
+                        navigation.navigate('rank');
+                    });
+                } else {
+                    // Cancelled swipe → spring back
+                    Animated.spring(translateX, {
+                        toValue: 0,
+                        useNativeDriver: true,
+                    }).start();
+                }
+            },
+        })
+    ).current;
+
     useEffect(() => {
         if (authentication === false) {
             router.replace('/auth/sign-in');
@@ -108,58 +153,60 @@ export default function Friend() {
 
     return (
         <View style={{ flex: 1, backgroundColor: '#ffffffff' }}>
-            <TopNavBarGlobal style={{ top: 0, left: 0 }} pageName={'Friends'} />
-            <View style={{ flex: 1 }}>
-                <FriendNavBar />
-
-                <View style={{ padding: 20 }}>
-                    <KeyboardAwareScrollView enableOnAndroid={true} enableAutomaticScroll={false}>
-                        <View style={{ position: 'relative', marginBottom: 20 }}>
-                            <TextInput
-                                style={{
-                                    borderColor: '#5a6daa',
-                                    borderWidth: 1,
-                                    borderRadius: 20,
-                                    width: '100%',
-                                    paddingHorizontal: 20,
-                                    paddingVertical: 15,
-                                    paddingRight: 40,
-                                }}
-                                autoCapitalize="none"
-                                placeholder="Search Email"
-                                placeholderTextColor="#5a6daa"
-                                value={searchTerm}
-                                onChangeText={(text) => setSearchTerm(text ?? '')}
-                            />
-                            {searchTerm.length === 0 ? (
-                                <Ionicons
-                                    name="search-outline"
-                                    size={20}
-                                    style={{ position: 'absolute', right: 15, top: 15, color: '#5a6daa' }}
+            <Animated.View {...panResponder.panHandlers}
+                style={[{ flex: 1, backgroundColor: '#ffffff', transform: [{ translateX }] }]}>
+                <TopNavBarGlobal style={{ top: 0, left: 0 }} pageName={'Friends'} />
+                <View style={{ flex: 1 }}>
+                    <FriendNavBar />
+                    <View style={{ padding: 20 }}>
+                        <KeyboardAwareScrollView enableOnAndroid={true} enableAutomaticScroll={false}>
+                            <View style={{ position: 'relative', marginBottom: 20 }}>
+                                <TextInput
+                                    style={{
+                                        borderColor: '#5a6daa',
+                                        borderWidth: 1,
+                                        borderRadius: 20,
+                                        width: '100%',
+                                        paddingHorizontal: 20,
+                                        paddingVertical: 15,
+                                        paddingRight: 40,
+                                    }}
+                                    autoCapitalize="none"
+                                    placeholder="Search Email"
+                                    placeholderTextColor="#5a6daa"
+                                    value={searchTerm}
+                                    onChangeText={(text) => setSearchTerm(text ?? '')}
                                 />
-                            ) : (
-                                <TouchableOpacity
-                                    onPress={() => setSearchTerm('')}
-                                    style={{ position: 'absolute', right: 15, top: 15 }}
-                                >
-                                    <Ionicons name="close-circle" size={20} color="#5a6daa" />
-                                </TouchableOpacity>
+                                {searchTerm.length === 0 ? (
+                                    <Ionicons
+                                        name="search-outline"
+                                        size={20}
+                                        style={{ position: 'absolute', right: 15, top: 15, color: '#5a6daa' }}
+                                    />
+                                ) : (
+                                    <TouchableOpacity
+                                        onPress={() => setSearchTerm('')}
+                                        style={{ position: 'absolute', right: 15, top: 15 }}
+                                    >
+                                        <Ionicons name="close-circle" size={20} color="#5a6daa" />
+                                    </TouchableOpacity>
+                                )}
+                            </View>
+
+                            {searching && <ActivityIndicator size="small" color="#333" />}
+
+                            {userResult && userResult.userid !== senderID && (
+                                <AddFriendCard senderID={senderID} receiver={userResult} onAddFriend={handleAddFriend} loading={loadingAdd} />
                             )}
-                        </View>
 
-                        {searching && <ActivityIndicator size="small" color="#333" />}
-
-                        {userResult && userResult.userid !== senderID && (
-                            <AddFriendCard senderID={senderID} receiver={userResult} onAddFriend={handleAddFriend} loading={loadingAdd} />
-                        )}
-
-                        {!userResult && message ? (
-                            <Text style={{ color: 'gray', textAlign: 'center', fontSize: 16 }}>{message}</Text>
-                        ) : null}
-                    </KeyboardAwareScrollView>
+                            {!userResult && message ? (
+                                <Text style={{ color: 'gray', textAlign: 'center', fontSize: 16 }}>{message}</Text>
+                            ) : null}
+                        </KeyboardAwareScrollView>
+                    </View>
                 </View>
-            </View>
-            <BottomNavBar style={{ bottom: 0, left: 0 }} />
+                <BottomNavBar style={{ bottom: 0, left: 0 }} />
+            </Animated.View>
         </View>
     );
 }
