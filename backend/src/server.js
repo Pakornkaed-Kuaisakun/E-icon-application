@@ -11,7 +11,7 @@ import rankRoute from './routes/rankRoute.js';
 import taskRoute from './routes/taskRoute.js';
 import photoRoute from './routes/photoRoute.js';
 import appInfoRoute from './routes/appInfoRoute.js';
-// import chatRoute from './routes/chatRoute.js';
+import chatRoute from './routes/chatRoute.js';
 
 dotenv.config();
 
@@ -26,7 +26,7 @@ app.use('/api/rank', rankRoute);
 app.use('/api/task', taskRoute);
 app.use('/api/photo', photoRoute);
 app.use('/api/app', appInfoRoute);
-// app.use('/api/chat', chatRoute);
+app.use('/api/chat', chatRoute);
 
 const PORT = process.env.PORT || 8080;
 const server = http.createServer(app);
@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
         const { senderID, receiverID, message } = JSON.parse(data);
 
         try {
-            const result = await db`INSERT INTO messages (senderid, receiverid, message) VALUES (${senderID}, ${receiverID}, ${message}) RETURNING *`;
+            const result = await db`INSERT INTO messages (senderid, receiverid, message) VALUES (${senderID}, ${receiverID}, ${message})`;
 
             // console.log(result);
 

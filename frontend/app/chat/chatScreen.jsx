@@ -8,6 +8,7 @@ import BASE_API_URL from '@/constants/path';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoadingScreen from '@/components/LoadingScreen';
+import formatDate from "../../assets/lib/formatDate";
 
 const socket = io(BASE_API_URL);
 
@@ -44,21 +45,28 @@ export default function ChatScreen() {
     }, []);
 
     useEffect(() => {
-        socket.on("receive_message", (msg) => {
-            console.log(msg);
+        if (!socket || !userID || !friendId) return;
+
+        const handleReceiveMessage = (msg) => {
+            console.log("Received message:", msg);
+
             if (
                 (msg.senderid === userID && msg.receiverid === friendId) ||
                 (msg.senderid === friendId && msg.receiverid === userID)
             ) {
-                setChat((prev) => [...prev, msg.message]);
+                setChat((prev) => [...prev, msg]);
             }
-        });
+        };
 
-        return () => socket.off("receive_message");
-    }, [friendId]);
+        socket.on("receive_message", handleReceiveMessage);
+
+        return () => socket.off("receive_message", handleReceiveMessage);
+    }, [userID, friendId]);
+
 
     const sendMessage = () => {
-        if (message.trim()) {
+        console.log(message);
+        if (message.length > 0) {
             const msg = {
                 senderID: userID,
                 receiverID: friendId,
@@ -71,17 +79,20 @@ export default function ChatScreen() {
     };
 
     useEffect(() => {
-            if (authentication === false) {
-                router.replace('/auth/sign-in');
-            }
-        }, [authentication, router]);
-    
-        if (authentication === null) {
-            return <LoadingScreen />;
+        if (authentication === false) {
+            router.replace('/auth/sign-in');
         }
+    }, [authentication, router]);
+
+    if (authentication === null) {
+        return <LoadingScreen />;
+    }
 
     return (
         <View style={{ flex: 1, padding: 10 }}>
+            <TouchableOpacity onPress={() => navigation.navigate('friends/friend')}>
+                <Text>Back</Text>
+            </TouchableOpacity>
             <FlatList
                 data={chat}
                 keyExtractor={(item) => item.id?.toString() ?? Math.random().toString()}
@@ -92,12 +103,11 @@ export default function ChatScreen() {
                             item.senderid === userID ? styles.right : styles.left,
                         ]}
                     >
-                        <Text>{item.text}</Text>
+                        <Text style={styles.message}>{item.message}</Text>
+                        <Text style={styles.time}>{formatDate(item.created_at)}</Text>
                     </View>
                 )}
             />
-            <Text>{userID}</Text>
-            <Text>{friendId}</Text>
             <View style={styles.inputContainer}>
                 <TextInput
                     style={styles.input}
@@ -107,9 +117,6 @@ export default function ChatScreen() {
                 />
                 <Button title="Send" onPress={sendMessage} />
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate('friends/friend')}>
-                <Text>Back</Text>
-            </TouchableOpacity>
         </View>
     );
 }
@@ -132,7 +139,7 @@ const styles = StyleSheet.create({
     inputContainer: {
         flexDirection: "row",
         alignItems: "center",
-        marginTop: 10,
+        marginBottom: 20,
     },
     input: {
         flex: 1,
@@ -142,4 +149,12 @@ const styles = StyleSheet.create({
         marginRight: 10,
         borderRadius: 5,
     },
+    message: {
+        fontSize: 17
+    },
+    time: {
+        fontSize: 10,
+        marginTop: 5,
+        color: '#999'
+    }
 });
