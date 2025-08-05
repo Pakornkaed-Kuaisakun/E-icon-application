@@ -1,8 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import http from 'http';
-import { WebSocketServer } from 'ws';
-import { initDB, pool } from './config/db.js';
+import { Server } from 'socket.io';
+import { initDB } from './config/db.js';
 import rateLimiter from './middleware/rateLimit.js';
 import authRoute from './routes/authRoute.js';
 import dashboardRoute from './routes/dashboardRoute.js';
@@ -31,16 +31,34 @@ app.use('/api/chat', chatRoute);
 const PORT = process.env.PORT || 8080;
 const server = http.createServer(app);
 
-// 🔥 WebSocket
-const wss = new WebSocketServer({ server });
-
-wss.on('connection', (ws) => {
-    console.log('Client connected via WebSocket');
-
-    ws.on('close', () => {
-        console.log('Client disconnected');
-    });
+const io = new Server(server, {
+    cors: {
+        origin: '*',
+        methods: ['GET', 'POST'],
+    },
 });
+
+let messages = [];
+
+io.on('connection', (socket) => {
+    console.log('Connected WebSocket');
+
+    socket.emit('chat_history', messages);
+
+    socket.on('send_message', (data) => {
+        const message = {
+            id: Date.now(),
+            time: new Date().toISOString(),
+        };
+        messages.push(message);
+
+        io.emit('receive_message', message); // broadcast to all
+    });
+
+    socket.on('disconnect', () => {
+        console.log(`User disconnected: ${socket.id}`);
+    });
+})
 
 initDB().then(() => {
     server.listen(PORT, () => {
