@@ -1,5 +1,5 @@
 // screens/ChatScreen.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { View, Text, TextInput, Button, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import { io } from "socket.io-client";
 // import { useRoute } from "@react-navigation/native";
@@ -11,12 +11,11 @@ import LoadingScreen from '@/components/LoadingScreen';
 import formatDate from "../../assets/lib/formatDate";
 import axios from 'axios';
 
-const socket = io(BASE_API_URL);
-
 export default function ChatScreen() {
     const authentication = useAuth();
     const router = useRouter();
     const navigation = useNavigation();
+    const socket = io(BASE_API_URL);
 
 
     const { friendId } = useLocalSearchParams();
@@ -26,6 +25,9 @@ export default function ChatScreen() {
     const [userID, setUserID] = useState(null);
     const [loading, setLoading] = useState(false);
     const [history, setHistory] = useState([]);
+
+    const flatListRef = useRef(null);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -47,6 +49,36 @@ export default function ChatScreen() {
     }, []);
 
     useEffect(() => {
+        socket.on('receive_message', (msg) => {
+            console.log("Received message:", msg); // ควรเป็น object, ไม่ใช่ null
+            if (
+                msg &&
+                ((msg.senderid === userID && msg.receiverid === friendId) ||
+                    (msg.senderid === friendId && msg.receiverid === userID))
+            ) {
+                setChat((prev) => [...prev, msg]);
+            }
+        });
+
+        return () => socket.off('receive_message');
+    }, [userID, friendId]);
+
+
+    const sendMessage = () => {
+        // console.log(message);
+        if (message.length > 0) {
+            const msg = {   
+                senderID: userID,
+                receiverID: friendId,
+                message: message,
+            };
+            // console.log(JSON.stringify(msg));
+            socket.emit("send_message", JSON.stringify(msg));
+            setMessage("");
+        }
+    };
+
+    useEffect(() => {
         const fetchChatHistory = async () => {
             setLoading(true);
             try {
@@ -63,39 +95,6 @@ export default function ChatScreen() {
             fetchChatHistory();
         }
     }, [userID, friendId]);
-
-    useEffect(() => {
-        if (!socket || !userID || !friendId) return;
-
-        const handleReceiveMessage = (msg) => {
-            if (
-                (msg.senderid === userID && msg.receiverid === friendId) ||
-                (msg.senderid === friendId && msg.receiverid === userID)
-            ) {
-                setChat((prev) => [...prev, msg]);
-            }
-        };
-
-        socket.on("receive_message", handleReceiveMessage);
-
-        return () => socket.off("receive_message", handleReceiveMessage);
-    }, [socket, userID, friendId]);
-
-
-
-    const sendMessage = () => {
-        // console.log(message);
-        if (message.length > 0) {
-            const msg = {
-                senderID: userID,
-                receiverID: friendId,
-                message: message,
-            };
-            // console.log(JSON.stringify(msg));
-            socket.emit("send_message", JSON.stringify(msg));
-            setMessage("");
-        }
-    };
 
     // console.log(history);
 
@@ -115,7 +114,9 @@ export default function ChatScreen() {
                 <Text>Back</Text>
             </TouchableOpacity>
             <FlatList
-                data={chat}
+                ref={flatListRef}
+                onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+                data={[...chat, ...history]}
                 keyExtractor={(item, index) => item.id?.toString() ?? index.toString()}
                 renderItem={({ item }) => (
                     <View
