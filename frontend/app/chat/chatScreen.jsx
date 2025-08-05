@@ -59,8 +59,8 @@ export default function ChatScreen() {
     const sendMessage = () => {
         if (message.trim()) {
             const msg = {
-                senderid: userID,
-                receiverid: friendId,
+                senderID: userID,
+                receiverID: friendId,
                 message: message,
             };
             console.log(JSON.stringify(msg));
