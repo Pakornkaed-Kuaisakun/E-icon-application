@@ -38,7 +38,7 @@ export async function getImage(req, res) {
         if (images && images.length > 0) {
             return res.status(200).json({ images: images });
         } else {
-            return res.status(404).json({ message: 'No images found for this user' });
+            return res.status(200).json({ message: 'No images found for this user' });
         }
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error', error });

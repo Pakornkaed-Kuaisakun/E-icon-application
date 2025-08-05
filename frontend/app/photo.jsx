@@ -28,8 +28,13 @@ export default function Photo() {
         setLoading(true);
         try {
             const response = await axios.get(`${BASE_API_URL}/api/photo/getImage/${userID}`);
-            // console.log("Response from server:", response.data.images);
-            setImage(response.data.images);
+            // console.log("Response from server:", response.data);
+            if (response.data.images) {
+                setImage(response.data.images);
+            } else {
+                setMessage(response.data.message);
+            }
+
         } catch (error) {
             console.error("Error fetching image:", error);
             setMessage("Failed to fetch image");
@@ -125,8 +130,12 @@ export default function Photo() {
                 <View style={{ flex: 1, alignItems: 'center' }}>
                     {loading ? (
                         <LoadingScreen />
-                    ) : (
+                    ) : image.length > 0 ? (
                         <PhotoScreen imageURLs={image} />
+                    ) : (
+                        <Text style={{ textAlign: 'center', marginTop: 20, color: '#888', fontSize: 18 }}>
+                            {message || 'Loading...'}
+                        </Text>
                     )}
                 </View>
                 <BottomNavBar />
