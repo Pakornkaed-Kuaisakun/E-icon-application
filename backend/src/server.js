@@ -42,10 +42,11 @@ io.on('connection', (socket) => {
     console.log('New client connected');
 
     socket.on("send_message", async (data) => {
-        const { senderID, receiverID, message } = data;
+        const { senderID, receiverID, message } = JSON.parse(data);
+        console.log(senderID, receiverID, message);
 
         try {
-            const result = await db`INSERT INTO messages (senderid, receiverid, message) VALUES (${senderID}, ${receiverID}, ${message})`;
+            const result = await db`INSERT INTO messages (senderid, receiverid, message) VALUES (${senderID}, ${receiverID}, ${message}) RETURNING *`;
             const savedMessage = result.rows[0];
 
             io.emit("receive_message", savedMessage);

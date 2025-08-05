@@ -21,7 +21,7 @@ export default function MainFriendCard({ userid }) {
                 {/* <View style={{ marginRight: 6, marginTop: 7 }}>
                     <Text style={styles.badges}>Tree Level {userid.treeLevel}</Text>
                 </View> */}
-                <TouchableOpacity onPress={() => router.replace(`chat/chatScreen?friendid=${userid.userid}`)}>
+                <TouchableOpacity onPress={() => router.replace({ pathname: "/chat/chatScreen", params: { friendId: userid.userid } })}>
                     <Text>go</Text>
                 </TouchableOpacity>
             </View>

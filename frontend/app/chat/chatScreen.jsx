@@ -61,9 +61,10 @@ export default function ChatScreen() {
             const msg = {
                 senderid: userID,
                 receiverid: friendId,
-                text: message,
+                message: message,
             };
-            socket.emit("send_message", msg);
+            console.log(JSON.stringify(msg));
+            socket.emit("send_message", JSON.stringify(msg));
             setMessage("");
         }
     };
@@ -94,6 +95,8 @@ export default function ChatScreen() {
                     </View>
                 )}
             />
+            <Text>{userID}</Text>
+            <Text>{friendId}</Text>
             <View style={styles.inputContainer}>
                 <TextInput
                     style={styles.input}
