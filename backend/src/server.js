@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import http from 'http';
 import { Server } from 'socket.io';
-import { initDB } from './config/db.js';
+import { initDB, pool } from './config/db.js';
 import rateLimiter from './middleware/rateLimit.js';
 import authRoute from './routes/authRoute.js';
 import dashboardRoute from './routes/dashboardRoute.js';
