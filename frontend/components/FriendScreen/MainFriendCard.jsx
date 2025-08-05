@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { COLORS } from '@/constants/colors';
 import { useNavigation, useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function MainFriendCard({ userid }) {
     // const router = useRoute();
@@ -22,7 +23,7 @@ export default function MainFriendCard({ userid }) {
                     <Text style={styles.badges}>Tree Level {userid.treeLevel}</Text>
                 </View> */}
                 <TouchableOpacity onPress={() => router.replace({ pathname: "/chat/chatScreen", params: { friendId: userid.userid } })}>
-                    <Text>go</Text>
+                    <Ionicons name="send-outline" size={24} style={{ color: '#5A6DAA', marginTop: 6, marginRight: 7 }}></Ionicons>
                 </TouchableOpacity>
             </View>
         </View>

@@ -9,6 +9,7 @@ import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoadingScreen from '@/components/LoadingScreen';
 import formatDate from "../../assets/lib/formatDate";
+import axios from 'axios';
 
 const socket = io(BASE_API_URL);
 
@@ -24,6 +25,7 @@ export default function ChatScreen() {
     const [chat, setChat] = useState([]);
     const [userID, setUserID] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [history, setHistory] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,10 +47,31 @@ export default function ChatScreen() {
     }, []);
 
     useEffect(() => {
-        if (!socket || !userID || !friendId) return;
+        const fetchChatHistory = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get(`https://e-icon-application-1.onrender.com/api/chat/history?senderID=${userID}&receiverID=${friendId}`);
+                setHistory(response.data.result);
+            } catch (error) {
+                console.error('Error loading chat history:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (userID && friendId) {
+            fetchChatHistory();
+        }
+    }, [userID, friendId]);
+
+    useEffect(() => {
+        if (!socket || !userID || !friendId){ return; }
 
         const handleReceiveMessage = (msg) => {
-            console.log("Received message:", msg);
+            if(!msg) {
+                console.log("Received message: ", msg);
+                return;
+            }
 
             if (
                 (msg.senderid === userID && msg.receiverid === friendId) ||
@@ -65,18 +88,20 @@ export default function ChatScreen() {
 
 
     const sendMessage = () => {
-        console.log(message);
+        // console.log(message);
         if (message.length > 0) {
             const msg = {
                 senderID: userID,
                 receiverID: friendId,
                 message: message,
             };
-            // console.log(JSON.stringify(msg));
+            console.log(JSON.stringify(msg));
             socket.emit("send_message", JSON.stringify(msg));
             setMessage("");
         }
     };
+
+    // console.log(history);
 
     useEffect(() => {
         if (authentication === false) {
@@ -94,8 +119,8 @@ export default function ChatScreen() {
                 <Text>Back</Text>
             </TouchableOpacity>
             <FlatList
-                data={chat}
-                keyExtractor={(item) => item.id?.toString() ?? Math.random().toString()}
+                data={[...history, ...chat]}
+                keyExtractor={(item, index) => item.id?.toString() ?? index.toString()}
                 renderItem={({ item }) => (
                     <View
                         style={[
