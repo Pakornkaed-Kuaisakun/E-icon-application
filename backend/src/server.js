@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import http from 'http';
 import { Server } from 'socket.io';
-import { initDB, pool } from './config/db.js';
+import { initDB, db } from './config/db.js';
 import rateLimiter from './middleware/rateLimit.js';
 import authRoute from './routes/authRoute.js';
 import dashboardRoute from './routes/dashboardRoute.js';
@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
         const { senderID, receiverID, message } = data;
 
         try {
-            const result = await pool`INSERT INTO messages (senderid, receiverid, message) VALUES (${senderID}, ${receiverID}, ${message})`;
+            const result = await db`INSERT INTO messages (senderid, receiverid, message) VALUES (${senderID}, ${receiverID}, ${message})`;
             const savedMessage = result.rows[0];
 
             io.emit("receive_message", savedMessage);
