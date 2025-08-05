@@ -41,14 +41,21 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
     console.log('New client connected');
 
-    socket.on('chat message', (message) => {
-        console.log('Received message:', message);
-        // Broadcast message to all clients
-        io.emit('chat message', message);
-    });
+    socket.on("send_message", async (data) => {
+        const { senderID, receiverID, message } = data;
+
+        try {
+            const result = await pool`INSERT INTO messages (senderid, receiverid, message) VALUES (${senderID}, ${receiverID}, ${message})`;
+            const savedMessage = result.rows[0];
+
+            io.emit("receive_message", savedMessage);
+        } catch (error) {
+            console.error(error);
+        }
+    })
 
     socket.on('disconnect', () => {
-        console.log('Client disconnected');
+        console.log('Client disconnected', socket.id);
     });
 });
 

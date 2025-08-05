@@ -1,8 +1,13 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { COLORS } from '@/constants/colors';
+import { useNavigation, useRouter } from 'expo-router';
 
 export default function MainFriendCard({ userid }) {
+    // const router = useRoute();
+    const navigation = useNavigation();
+    const router = useRouter();
+
     // console.log(userid);
     return (
         <View style={styles.card}>
@@ -13,9 +18,12 @@ export default function MainFriendCard({ userid }) {
                     <Text style={styles.name}>{userid.username}</Text>
                     <Text style={styles.username}>{userid.email}</Text>
                 </View>
-                <View style={{ marginRight: 6, marginTop: 7 }}>
+                {/* <View style={{ marginRight: 6, marginTop: 7 }}>
                     <Text style={styles.badges}>Tree Level {userid.treeLevel}</Text>
-                </View>
+                </View> */}
+                <TouchableOpacity onPress={() => router.replace(`chat/chatScreen?friendid=${userid.userid}`)}>
+                    <Text>go</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
