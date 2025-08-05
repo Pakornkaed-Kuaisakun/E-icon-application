@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import TaskCard from '../../components/TaskScreen/TaskCard';
 import CameraScreen from '../../components/TaskScreen/CameraScreen';
 import { supabase } from '@/assets/lib/supabase';
+import CongrateCard from '../../components/TaskScreen/CongraturationCard';
 import * as FileSystem from 'expo-file-system';
 
 export default function Task() {
@@ -31,7 +32,7 @@ export default function Task() {
     const [currentTask, setCurrentTask] = useState({ userid: null, taskid: null, date: null, point: null, status: 'completed' })
     const [imgPath, setImgPath] = useState(null);
     const [userData, setUserData] = useState(null);
-    const [modalVisible, setModelVisible] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
 
     const getFormattedDate = () => {
         const today = new Date();
@@ -87,7 +88,9 @@ export default function Task() {
     const handlePictureTaken = async (photoURI) => {
         setLoading(true);
         await uploadPhotoToSupabase(photoURI);
-        router.replace('task/dailyTask');
+        setShowCamera(false);
+        setModalVisible(true);
+        // router.replace('task/dailyTask');
     }
 
     const uploadPhotoToSupabase = async (uri) => {
@@ -110,13 +113,11 @@ export default function Task() {
 
             const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imagePath, date: String(today), point: currentTask.point, status: currentTask.status });
 
-            console.log(res.data);
+            // console.log(res.data);
 
             if (res.status === 200) {
                 // console.log('Success');
-                setCurrentTask({ userid: null, taskid: null, date: null, point: null, status: 'completed' });
-                setImgPath('');
-                router.replace('task/dailyTask');
+                setImgPath(imagePath);
             } else {
                 console.log('Something Error');
                 setCurrentTask({ userid: null, taskid: null, date: null, point: null, status: 'completed' });
@@ -221,6 +222,9 @@ export default function Task() {
                         </View>
                     )}
                 </View>
+                {modalVisible ? (
+                    <CongrateCard imgPath={imgPath} visible={modalVisible} point={currentTask.point} onClose={() => { setModalVisible(false); setImgPath(''); router.replace('task/dailyTask'); setCurrentTask({ userid: null, taskid: null, date: null, point: null, status: 'completed' }); }} />
+                ) : null}
                 <BottomNavBar />
             </Animated.View>
         </View >

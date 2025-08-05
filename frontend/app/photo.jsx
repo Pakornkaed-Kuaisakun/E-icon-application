@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Dimensions, Animated, PanResponder } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@/assets/lib/auth';
-import { useRouter } from 'expo-router'
+import { useNavigation, useRouter } from 'expo-router'
 import { TopNavBarGlobal } from '@/components/Navigation/TopNavbarGlobal';
 import { BottomNavBar } from '@/components/Navigation/BottomNavBar';
 import LoadingScreen from '@/components/LoadingScreen';
@@ -9,11 +9,11 @@ import BASE_API_URL from '../constants/path';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PhotoScreen from '../components/PhotoScreen/PhotoScreen';
-import { loadavg } from 'os';
 
 export default function Photo() {
     const authentication = useAuth();
     const router = useRouter();
+    const navigation = useNavigation();
 
     const translateX = useRef(new Animated.Value(0)).current;
     const screenWidth = Dimensions.get('window').width;
@@ -80,34 +80,23 @@ export default function Photo() {
                 }
             },
             onPanResponderRelease: (_, gesture) => {
-                if (gesture.dx < -50) {
-                    // Swipe Left → Go to /rank
-                    Animated.timing(translateX, {
-                        toValue: -screenWidth,
-                        duration: 300,
-                        useNativeDriver: true,
-                    }).start(() => {
-                        translateX.setValue(0); // reset for next time
-                        router.push('/rank');
-                    });
-                } else if (gesture.dx > 50) {
-                    // Swipe Right → Go to /index
+                if (gesture.dx > 50) {
+                    // Animate slide right
                     Animated.timing(translateX, {
                         toValue: screenWidth,
-                        duration: 300,
+                        duration: 270,
                         useNativeDriver: true,
                     }).start(() => {
-                        translateX.setValue(0);
-                        router.push('/index');
+                        navigation.navigate('friends/friend');
                     });
                 } else {
-                    // Cancelled swipe → spring back
+                    // Animate back to original position
                     Animated.spring(translateX, {
                         toValue: 0,
                         useNativeDriver: true,
                     }).start();
                 }
-            },
+            }
         })
     ).current;
 
