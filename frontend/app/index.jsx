@@ -48,12 +48,13 @@ export default function Index() {
         if (!userInfo?.userid) return;
         setLoading(true);
         try {
-            await axios.post(`${BASE_API_URL}/api/dashboard/growTree`, {
+            const res = await axios.post(`${BASE_API_URL}/api/dashboard/growTree`, {
                 userid: userInfo.userid,
                 currentTreeLevel: userInfo.treeLevel,
                 currentTreePoint: userInfo.treePoint,
                 currentGrowingPoint: userInfo.growingPoint,
             });
+            console.log(res.data);
             fetchUserInfo();
         } catch (error) {
             console.error('Grow Tree Error:', error);

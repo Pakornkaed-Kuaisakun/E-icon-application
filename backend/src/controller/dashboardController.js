@@ -29,14 +29,14 @@ export async function useGrowTree(req, res) {
             const growTree = await db`UPDATE users SET "treePoint" = ${Number(currentTreePoint + 1)}, "growingPoint" = ${Number(currentGrowingPoint - 1)} WHERE userid = ${userid}`;
 
             if (growTree) {
-                res.status(200).json({ message: 'Grow Tree Successfully' });
+                res.status(200).json({ message: 'Grow Tree Successfully', reward: false });
             } else {
                 res.status(500).json({ message: 'error - treePoint < 99' });
             }
         } else {
             const growTree = await db`UPDATE users SET "treeLevel" = ${Number(currentTreeLevel) + 1}, "treePoint" = 0, "growingPoint" = ${Number(currentGrowingPoint) - 1} WHERE userid = ${userid}`;
             if (growTree) {
-                res.status(200).json({ message: 'Grow Tree Successfully' });
+                res.status(200).json({ message: 'Grow Tree Successfully', reward: true });
             } else {
                 res.status(500).json({ message: 'error - treePoint < 99' });
             }
