@@ -38,27 +38,21 @@ const io = new Server(server, {
     },
 });
 
-let messages = [];
-
 io.on('connection', (socket) => {
-    console.log('Connected WebSocket');
+    console.log('New client connected');
 
-    socket.emit('chat_history', messages);
-
-    socket.on('send_message', (data) => {
-        const message = {
-            id: Date.now(),
-            time: new Date().toISOString(),
-        };
-        messages.push(message);
-
-        io.emit('receive_message', message); // broadcast to all
+    socket.on('chat message', (message) => {
+        console.log('Received message:', message);
+        // Broadcast message to all clients
+        io.emit('chat message', message);
     });
 
     socket.on('disconnect', () => {
-        console.log(`User disconnected: ${socket.id}`);
+        console.log('Client disconnected');
     });
-})
+});
+
+
 
 initDB().then(() => {
     server.listen(PORT, () => {
