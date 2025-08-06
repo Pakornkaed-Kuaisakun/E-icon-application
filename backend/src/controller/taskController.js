@@ -81,16 +81,25 @@ export async function fetchEventTask(req, res) {
 
 export async function fetchEventTaskUser(req, res) {
     try {
-        const eventTaskUser = await db`SELECT * FROM usertask WHERE userid = ${req.query.userID} AND taskid = ${req.query.taskID}`;
-        if(eventTaskUser) {
-            return res.status(200).json({ eventTaskUser: eventTaskUser });
-        } else {
-            return res.status(200).json({ eventTaskUser: null });
+        const userID = req.query.userID;
+        const taskIDs = req.query.taskIDs?.split(',');
+
+        if (!userID || !taskIDs || taskIDs.length === 0) {
+            return res.status(400).json({ message: 'Missing userID or taskIDs' });
         }
+
+        const eventTaskUser = await db`
+            SELECT * FROM usertask
+            WHERE userid = ${userID}
+            AND taskid IN ${db(taskIDs)}
+        `;
+
+        return res.status(200).json({ eventTaskUser });
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error', error });
     }
 }
+
 
 export async function createEventTask(req, res) {
     const { userid, taskid, date } = req.body;
