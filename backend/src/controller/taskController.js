@@ -79,6 +79,33 @@ export async function fetchEventTask(req, res) {
     }
 }
 
+export async function fetchEventTaskUser(req, res) {
+    try {
+        const eventTaskUser = await db`SELECT * FROM usertask WHERE userid = ${req.query.userID} AND taskid = ${req.query.taskID}`;
+        if(eventTaskUser) {
+            return res.status(200).json({ eventTaskUser: eventTaskUser });
+        } else {
+            return res.status(200).json({ eventTaskUser: null });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error', error });
+    }
+}
+
+export async function createEventTask(req, res) {
+    const { userid, taskid, date } = req.body;
+    try {
+        const create = await db`INSERT INTO usertask (userid, taskid, date, status) VALUES (${userid}, ${taskid}, ${date}, "unfinished") RETURNING *`;
+        if(create) {
+            return res.status(200).json({ message: 'Create Event Task Successfully' });
+        } else {
+            return res.status(500).json({ message: 'Create Event Task Failed' });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Internal Server Error', error });
+    }
+}
+
 export async function updateTaskStatus(req, res) {
     const { userid, taskid, imgPath, date } = req.body;
     try {
