@@ -11,6 +11,7 @@ import { WaterButton } from '@/components/HomeScreen/WaterButton';
 import axios from 'axios';
 import BASE_API_URL from '@/constants/path';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { countryName } from '../constants/countryName';
 
 export default function Index() {
     const authentication = useAuth();
@@ -156,7 +157,7 @@ export default function Index() {
                                 resizeMode="cover"
                         />
                         <Text style={styles.text}>The larch tree you have grown</Text>
-                        <Text style={styles.text}>will be plant in Turkey.</Text>
+                        <Text style={styles.text}>will be plant in {countryName[Math.floor(Math.random() * countryName.length)]}.</Text>
                         <TouchableOpacity style={styles.button} onPress={() => { setModalVisible(false); setGetReward(false); }}>
                             <Text style={styles.buttonText}>Checked</Text>
                         </TouchableOpacity>
