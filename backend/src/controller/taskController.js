@@ -66,7 +66,7 @@ export async function fetchEventTask(req, res) {
     try {
         const eventTask = await db`SELECT * FROM tasks WHERE tasktype = 'event'`;
 
-        console.log(eventTask);
+        // console.log(eventTask);
 
         if(eventTask) {
             return res.status(200).json({ event: eventTask });
@@ -96,12 +96,15 @@ export async function createEventTask(req, res) {
     const { userid, taskid, date } = req.body;
     try {
         const create = await db`INSERT INTO usertask (userid, taskid, date, status) VALUES (${userid}, ${taskid}, ${date}, "unfinished") RETURNING *`;
+
+        console.log(create);
         if(create) {
             return res.status(200).json({ message: 'Create Event Task Successfully' });
         } else {
             return res.status(500).json({ message: 'Create Event Task Failed' });
         }
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ message: 'Internal Server Error', error });
     }
 }
