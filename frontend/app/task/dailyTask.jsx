@@ -111,7 +111,7 @@ export default function Task() {
             }
             const imagePath = String(BASE_SUPABASE_IMAGE_PATH) + String(data.fullPath);
 
-            const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imagePath, date: String(today), point: currentTask.point, status: currentTask.status });
+            const res = await axios.post(`${BASE_API_URL}/api/task/updateTaskStatus`, { userid: currentTask.userid, taskid: currentTask.taskid, imgPath: imagePath, date: String(today) });
 
             // console.log(res.data);
 
@@ -223,7 +223,7 @@ export default function Task() {
                     )}
                 </View>
                 {modalVisible ? (
-                    <CongrateCard imgPath={imgPath} visible={modalVisible} point={currentTask.point} onClose={() => { setModalVisible(false); setImgPath(''); router.replace('task/dailyTask'); setCurrentTask({ userid: null, taskid: null, date: null, point: null, status: 'completed' }); }} />
+                    <CongrateCard imgPath={imgPath} visible={modalVisible} onClose={() => { setModalVisible(false); setImgPath(''); router.replace('task/dailyTask'); setCurrentTask({ userid: null, taskid: null, date: null, point: null, status: 'completed' }); }} />
                 ) : null}
                 <BottomNavBar />
             </Animated.View>

@@ -25,7 +25,7 @@ export default function CongrateCard({ imgPath, onClose, visible, point }) {
         >
             <View style={styles.modalOverlay}>
                 <View style={styles.modalContainer}>
-                    <Text style={styles.title}>Mission Completed!</Text>
+                    <Text style={styles.title}>Send to Confirm!</Text>
                     {imgPath && (
                         <Image
                             source={{ uri: imgPath}}
@@ -34,7 +34,7 @@ export default function CongrateCard({ imgPath, onClose, visible, point }) {
                         />
                     )}
                     <Text style={styles.message}>{randomMessage}</Text>
-                    <Text style={styles.text}>You received {point || 1} water drop</Text>
+                    {/* <Text style={styles.text}>You received {point || 1} water drop</Text> */}
                     <TouchableOpacity style={styles.button} onPress={onClose}>
                         <Text style={styles.buttonText}>Close</Text>
                     </TouchableOpacity>

@@ -8,7 +8,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import BASE_API_URL from '../constants/path';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import PhotoScreen from '../components/PhotoScreen/PhotoScreen';
+import PhotoScreen from '../components/PhotoScreen/PhotoCard';
 
 export default function Photo() {
     const authentication = useAuth();
@@ -22,24 +22,24 @@ export default function Photo() {
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState('');
     // const [userResult, setUserResult] = useState([]);
+    const [taskResult, setTaskResult] = useState([]);
+    const [userTask, setUserTask] = useState([]);
+    const [userData, setUserData] = useState([]);
     const [image, setImage] = useState([]);
 
     const fetchImage = async () => {
         setLoading(true);
-        try {
-            const response = await axios.get(`${BASE_API_URL}/api/photo/getImage/${userID}`);
-            // console.log("Response from server:", response.data);
-            if (response.data.images) {
-                setImage(response.data.images);
-            } else {
-                setMessage(response.data.message);
-            }
-
-        } catch (error) {
-            console.error("Error fetching image:", error);
-            setMessage("Failed to fetch image");
-        } finally {
-            setLoading(false);
+        const res_get = await axios.get(`${BASE_API_URL}/api/photo/getProofTask/${userID}`);
+        // console.log(res_get.data.dailyTask[0].completed);
+        if (res_get.data.taskData.length > 0) {
+            setTaskResult(res_get.data.taskData);
+            setUserTask(res_get.data.proofTask);
+            setUserData(res_get.data.userData);
+        } else {
+            setTaskResult([]);
+            setUserTask([]);
+            setUserData([]);
+            setMessage('No Task Today');
         }
     };
 
@@ -54,8 +54,11 @@ export default function Photo() {
                     setUserID(user.userid);
                 }
             } catch (error) {
-                console.error('Error getting userInfo:', error);
-                setMessage('Failed to load user info');
+                setTaskResult([]);
+                setUserTask([]);
+                setUserData([]);
+                setMessage('No photo yet');
+                console.error("Error fetching image:", error);
             } finally {
                 setLoading(false);
             }
@@ -63,6 +66,35 @@ export default function Photo() {
 
         fetchData();
     }, []);
+
+    const handleConfirmImage = async (userid, taskid, point, id, currentPoint) => {
+        const res = await axios.post(`${BASE_API_URL}/api/photo/ConfirmImage`, { userid: userid, taskid: taskid, point: point, id: id, currentPoint: currentPoint });
+
+        if (res) {
+            setTaskResult([]);
+            setUserTask([]);
+            setUserData([]);
+            // console.log('Confirm Complete');
+            router.replace('photo');
+        } else {
+            console.error('Confirm Error');
+            setMessage('Confirm Error');
+        }
+    }
+
+    const handleRejectImage = async (userid, taskid, id) => {
+        const res = await axios.post(`${BASE_API_URL}/api/photo/RejectImage`, { userid: userid, taskid: taskid, id: id });
+        if (res) {
+            setTaskResult([]);
+            setUserTask([]);
+            setUserData([]);
+            console.log("Reject Image");
+            router.replace('photo');
+        } else {
+            console.error('Reject Error');
+            setMessage('Reject Error');
+        }
+    }
 
     useEffect(() => {
         if (userID) {
@@ -117,15 +149,22 @@ export default function Photo() {
                 style={[{ flex: 1, backgroundColor: '#ffffff', transform: [{ translateX }] }]}>
                 <TopNavBarGlobal pageName="Photo" />
                 <View style={{ flex: 1, alignItems: 'center' }}>
-                    {loading ? (
-                        <LoadingScreen />
-                    ) : image.length > 0 ? (
-                        <PhotoScreen imageURLs={image} />
-                    ) : (
-                        <Text style={{ textAlign: 'center', marginTop: 20, color: '#888', fontSize: 18 }}>
-                            {message || 'Loading...'}
-                        </Text>
-                    )}
+                    <ScrollView contentContainerStyle={{ width: Dimensions.get('window').width - 15, marginTop: 13 }}>
+                        {userTask && userTask.length > 0 ? (
+                            userTask.map((task) => {
+                                const matchingUserTask = taskResult.find(taskid => taskid.taskid === task.taskid);
+                                const matchingUserData = userData.find(userid => userid.userid === task.userid);
+
+                                return (
+                                    <PhotoScreen key={task.taskid} taskData={matchingUserTask} userTaskData={task} userData={matchingUserData} onConfirm={handleConfirmImage} onReject={handleRejectImage} />
+                                )
+                            })
+                        ) : (
+                            <Text style={{ textAlign: 'center', marginTop: 20, color: '#888', fontSize: 18 }}>
+                                {message || 'Loading...'}
+                            </Text>
+                        )}
+                    </ScrollView>
                 </View>
                 <BottomNavBar />
             </Animated.View>

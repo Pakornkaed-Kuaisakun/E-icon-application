@@ -1,6 +1,6 @@
 // screens/ChatScreen.js
 import React, { useEffect, useState, useRef } from "react";
-import { View, Text, TextInput, Button, FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, Button, FlatList, StyleSheet, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard } from "react-native";
 import { io } from "socket.io-client";
 // import { useRoute } from "@react-navigation/native";
 import { useAuth } from '@/assets/lib/auth';
@@ -25,6 +25,7 @@ export default function ChatScreen() {
     const [userID, setUserID] = useState(null);
     const [loading, setLoading] = useState(false);
     const [history, setHistory] = useState([]);
+    const [inputFocus, setInputFocus] = useState(false);
 
     const flatListRef = useRef(null);
 
@@ -50,7 +51,7 @@ export default function ChatScreen() {
 
     useEffect(() => {
         socket.on('receive_message', (msg) => {
-            console.log("Received message:", msg); // ควรเป็น object, ไม่ใช่ null
+            console.log("Received message:", msg);
             if (
                 msg &&
                 ((msg.senderid === userID && msg.receiverid === friendId) ||
@@ -67,7 +68,7 @@ export default function ChatScreen() {
     const sendMessage = () => {
         // console.log(message);
         if (message.length > 0) {
-            const msg = {   
+            const msg = {
                 senderID: userID,
                 receiverID: friendId,
                 message: message,
@@ -113,32 +114,49 @@ export default function ChatScreen() {
             <TouchableOpacity onPress={() => navigation.navigate('friends/friend')}>
                 <Text>Back</Text>
             </TouchableOpacity>
-            <FlatList
-                ref={flatListRef}
-                onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
-                data={[...chat, ...history]}
-                keyExtractor={(item, index) => item.id?.toString() ?? index.toString()}
-                renderItem={({ item }) => (
-                    <View
-                        style={[
-                            styles.messageBubble,
-                            item.senderid === userID ? styles.right : styles.left,
-                        ]}
-                    >
-                        <Text style={styles.message}>{item.message}</Text>
-                        <Text style={styles.time}>{formatDate(item.created_at)}</Text>
+            <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0}
+            >
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                    <View style={{ flex: 1 }}>
+                        {/* Your main chat content here if any */}
+                        <FlatList
+                            ref={flatListRef}
+                            onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+                            data={[...chat, ...history]}
+                            keyExtractor={(_, index) => index.toString()}
+                            renderItem={({ item }) => (
+                                <View
+                                    style={[
+                                        styles.messageBubble,
+                                        item.senderid === userID ? styles.right : styles.left,
+                                    ]}
+                                >
+                                    {/* <Text>{item.id}</Text> */}
+                                    <Text style={styles.message}>{item.message}</Text>
+                                    <Text style={styles.time}>{formatDate(item.created_at)}</Text>
+                                </View>
+                            )}
+                        />
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                style={styles.input}
+                                value={message}
+                                onChangeText={setMessage}
+                                placeholder="Message..."
+                                multiline
+                                onFocus={() => setInputFocus(true)}
+                                onBlur={() => setInputFocus(false)}
+                            />
+                            <TouchableOpacity onPress={sendMessage}>
+                                <Text style={{ fontSize: 17, fontWeight: 'bold', color: 'blue' }}>Send</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                )}
-            />
-            <View style={styles.inputContainer}>
-                <TextInput
-                    style={styles.input}
-                    value={message}
-                    onChangeText={setMessage}
-                    placeholder="Message..."
-                />
-                <Button title="Send" onPress={sendMessage} />
-            </View>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
         </View>
     );
 }
@@ -159,17 +177,23 @@ const styles = StyleSheet.create({
         alignSelf: "flex-end",
     },
     inputContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginBottom: 20,
+        flexDirection: 'row',
+        padding: 15,
+        backgroundColor: '#fff',
+        borderTopWidth: 1,
+        borderColor: '#ccc',
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     input: {
         flex: 1,
-        borderColor: "#ccc",
-        borderWidth: 1,
-        padding: 10,
         marginRight: 10,
-        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 20,
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        maxHeight: 100
     },
     message: {
         fontSize: 17
@@ -178,5 +202,5 @@ const styles = StyleSheet.create({
         fontSize: 10,
         marginTop: 5,
         color: '#999'
-    }
+    },
 });

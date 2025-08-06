@@ -63,32 +63,37 @@ export async function getDailyTask(req, res) {
 }
 
 export async function updateTaskStatus(req, res) {
-    const { userid, taskid, imgPath, date, point, status } = req.body;
+    const { userid, taskid, imgPath, date } = req.body;
     try {
-        const update = await db`
-            UPDATE usertask 
-            SET "proofImageURL" = ${imgPath}, "status" = ${status || 'completed'} 
-            WHERE userid = ${userid} AND taskid = ${taskid} AND date = ${date}
-            RETURNING *`;
+        const update = await db`UPDATE usertask SET "proofImageURL" = ${imgPath}, "status" = ${'pending'} WHERE userid = ${userid} AND taskid = ${taskid} AND "date" = ${date} RETURNING *`;
+        // const update = await db`
+        //     UPDATE usertask 
+        //     SET "proofImageURL" = ${imgPath}, "status" = ${status || 'completed'} 
+        //     WHERE userid = ${userid} AND taskid = ${taskid} AND date = ${date}
+        //     RETURNING *`;
 
-        if (update.length === 0) {
-            return res.status(200).json({ message: 'No matching usertask to update' });
-        }
+        // if (update.length === 0) {
+        //     return res.status(200).json({ message: 'No matching usertask to update' });
+        // }
 
-        const userData = await db`SELECT * FROM users WHERE userid = ${userid}`;
-        if (userData.length === 0) {
-            return res.status(200).json({ message: 'User not found' });
-        }
+        // const userData = await db`SELECT * FROM users WHERE userid = ${userid}`;
+        // if (userData.length === 0) {
+        //     return res.status(200).json({ message: 'User not found' });
+        // }
 
-        const updatePoint = await db`
-            UPDATE users 
-            SET "growingPoint" = ${Number(Number(point) + Number(userData[0].growingPoint))} 
-            WHERE userid = ${userid} RETURNING *`;
+        // const updatePoint = await db`
+        //     UPDATE users 
+        //     SET "growingPoint" = ${Number(Number(point) + Number(userData[0].growingPoint))} 
+        //     WHERE userid = ${userid} RETURNING *`;
 
-        if (updatePoint) {
-            return res.status(200).json({ message: 'Update UserTask and Point successfully' });
-        } else {
-            return res.status(500).json({ message: 'Update Point Failed' });
+        // if (updatePoint) {
+        //     return res.status(200).json({ message: 'Update UserTask and Point successfully' });
+        // } else {
+        //     return res.status(500).json({ message: 'Update Point Failed' });
+        // }
+
+        if(update) {
+            return res.status(200).json({ message: 'Update Task Status - pending - Successfully' });
         }
     } catch (error) {
         console.error(error);
