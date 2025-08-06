@@ -33,7 +33,7 @@ export async function newMessageUnread(req, res) {
     try {
         const fetch = await db`SELECT * FROM messages WHERE senderid = ${req.query.friendID} AND receiverid = ${req.query.userID} AND read = false ORDER BY created_at DESC LIMIT 1`;
 
-        console.log(fetch);
+        // console.log(fetch);
 
         if(fetch) {
             return res.status(200).json({ newMessage: fetch });

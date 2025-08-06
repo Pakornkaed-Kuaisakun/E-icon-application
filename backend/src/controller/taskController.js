@@ -62,6 +62,23 @@ export async function getDailyTask(req, res) {
     }
 }
 
+export async function fetchEventTask(req, res) {
+    try {
+        const eventTask = await db`SELECT * FROM tasks WHERE tasktype = 'event'`;
+
+        console.log(eventTask);
+
+        if(eventTask) {
+            return res.status(200).json({ event: eventTask });
+        } else {
+            return res.status(404).json({ message: 'Event Task not found' });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Internal Server Error', error });
+    }
+}
+
 export async function updateTaskStatus(req, res) {
     const { userid, taskid, imgPath, date } = req.body;
     try {

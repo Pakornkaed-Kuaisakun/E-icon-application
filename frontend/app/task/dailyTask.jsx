@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Dimensions, Animated, PanResponder, Modal } from 'react-native'
+import { View, Text, ScrollView, Dimensions, Animated, PanResponder, Modal, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@/assets/lib/auth';
 import { useNavigation, useRouter } from 'expo-router'
@@ -26,13 +26,16 @@ export default function Task() {
     const [userID, setUserID] = useState(null);
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState('');
+    const [eventMessage, setEventMessage] = useState('');
     const [taskResult, setTaskResult] = useState([]);
     const [taskStatus, setTaskStatus] = useState([]);
+    const [eventTask, setEventTask] = useState([]);
     const [showCamera, setShowCamera] = useState(false);
     const [currentTask, setCurrentTask] = useState({ userid: null, taskid: null, date: null, point: null, status: 'completed' })
     const [imgPath, setImgPath] = useState(null);
     const [userData, setUserData] = useState(null);
     const [modalVisible, setModalVisible] = useState(false);
+    const [eventModalVisible, setEventModalVisible] = useState(false);
 
     const getFormattedDate = () => {
         const today = new Date();
@@ -80,6 +83,24 @@ export default function Task() {
         } catch (error) {
             setTaskResult([]);
             setMessage('Loading Task Error');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const fetchEventTask = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.get(`${BASE_API_URL}/api/task/fetchEventTask`);
+            if(res.data.event.length > 0) {
+                setEventTask(res.data.event);
+            } else {
+                setEventTask([]);
+                setEventMessage('No Event Task');
+            }
+        } catch (error) {
+            setEventMessage([]);
+            setEventMessage('Loading Event Task Error');
         } finally {
             setLoading(false);
         }
@@ -133,8 +154,11 @@ export default function Task() {
     useEffect(() => {
         if (userID) {
             fetchTaskData();
+            fetchEventTask();
         }
     }, [userID]);
+
+    // console.log(eventTask);
 
     // ✅ Slide Gesture Handler
     const panResponder = useRef(
@@ -192,6 +216,7 @@ export default function Task() {
             <Animated.View {...panResponder.panHandlers}
                 style={[{ flex: 1, backgroundColor: '#ffffff', transform: [{ translateX }] }]}>
                 <TopNavBarGlobal pageName="Task" />
+                <Text style={{ fontSize: 27, fontWeight: 'bold', textAlign: 'center', marginTop: 15 }}>Daily Task</Text>
                 <View style={{ flex: 1, alignItems: 'center', marginTop: 0 }}>
                     {showCamera ? (
                         <CameraScreen onPictureTaken={handlePictureTaken} onClose={() => setShowCamera(false)} />
@@ -218,6 +243,37 @@ export default function Task() {
                                         {message || 'Loading...'}
                                     </Text>
                                 )}
+                                <TouchableOpacity style={{
+                                    flexDirection: 'row',
+                                    alignSelf: 'flex-end',
+                                    alignItems: 'center',
+                                    paddingHorizontal: 10,
+                                    paddingVertical: 5,
+                                    marginRight: 7,
+                                    marginTop: 20,
+                                    borderWidth: 2,
+                                    borderColor: '#5a6daa', // blue frame
+                                    borderRadius: 10,
+                                }}
+                                    onPress={() => console.log('Add new task button pressed')}>
+                                    <Text style={{ color: '#5a6daa', fontSize: 18, marginRight: 5 }}>make a event task</Text>
+                                    <Text
+                                        style={{
+                                            backgroundColor: '#5a6daa',
+                                            color: 'white',
+                                            fontSize: 18,
+                                            borderRadius: 15,
+                                            width: 30,
+                                            height: 30,
+                                            textAlign: 'center',
+                                            marginLeft: 5,
+                                            fontWeight: 'bold',
+                                            textAlignVertical: 'center',
+                                            lineHeight: 27,
+                                        }}>
+                                        +
+                                    </Text>
+                                </TouchableOpacity>
                             </ScrollView>
                         </View>
                     )}
