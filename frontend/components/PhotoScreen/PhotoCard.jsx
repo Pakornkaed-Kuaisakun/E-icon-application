@@ -6,7 +6,7 @@ export default function PhotoScreen({ taskData, userTaskData, userData, onConfir
     return (
         <View style={styles.container}>
             <Image
-                source={{ uri: 'https://vkuzwenqldmtvbksolgo.supabase.co/storage/v1/object/public/e-icon-storage//img_user_1722060248753_c1f3d4a2_task_0bc4a562%20_1753940795574.jpg' }}
+                source={{ uri: userTaskData.proofImageURL }}
                 style={styles.image}
                 resizeMode='cover'
             />

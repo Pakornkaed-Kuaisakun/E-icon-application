@@ -22,7 +22,7 @@ export default function MainFriendCard({ userid }) {
                 {/* <View style={{ marginRight: 6, marginTop: 7 }}>
                     <Text style={styles.badges}>Tree Level {userid.treeLevel}</Text>
                 </View> */}
-                <TouchableOpacity onPress={() => router.replace({ pathname: "/chat/chatScreen", params: { friendId: userid.userid } })}>
+                <TouchableOpacity onPress={() => router.replace({ pathname: "/chat/chatScreen", params: { friendId: userid.userid, username: userid.username, email: userid.email } })}>
                     <Ionicons name="send-outline" size={24} style={{ color: '#5A6DAA', marginTop: 6, marginRight: 7 }}></Ionicons>
                 </TouchableOpacity>
             </View>

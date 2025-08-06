@@ -20,7 +20,7 @@ export default function Photo() {
 
     const [userID, setUserID] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState("");
     // const [userResult, setUserResult] = useState([]);
     const [taskResult, setTaskResult] = useState([]);
     const [userTask, setUserTask] = useState([]);
@@ -30,11 +30,13 @@ export default function Photo() {
     const fetchImage = async () => {
         setLoading(true);
         const res_get = await axios.get(`${BASE_API_URL}/api/photo/getProofTask/${userID}`);
+        setLoading(false);
         // console.log(res_get.data.dailyTask[0].completed);
         if (res_get.data.taskData.length > 0) {
             setTaskResult(res_get.data.taskData);
             setUserTask(res_get.data.proofTask);
             setUserData(res_get.data.userData);
+            setMessage("");
         } else {
             setTaskResult([]);
             setUserTask([]);
@@ -161,7 +163,7 @@ export default function Photo() {
                             })
                         ) : (
                             <Text style={{ textAlign: 'center', marginTop: 20, color: '#888', fontSize: 18 }}>
-                                {message || 'Loading...'}
+                                {message || 'No Task to confirm'}
                             </Text>
                         )}
                     </ScrollView>

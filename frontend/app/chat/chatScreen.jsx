@@ -1,6 +1,6 @@
 // screens/ChatScreen.js
 import React, { useEffect, useState, useRef } from "react";
-import { View, Text, TextInput, Button, FlatList, StyleSheet, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard } from "react-native";
+import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard } from "react-native";
 import { io } from "socket.io-client";
 // import { useRoute } from "@react-navigation/native";
 import { useAuth } from '@/assets/lib/auth';
@@ -10,6 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoadingScreen from '@/components/LoadingScreen';
 import formatDate from "../../assets/lib/formatDate";
 import axios from 'axios';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ChatScreen() {
     const authentication = useAuth();
@@ -18,7 +19,8 @@ export default function ChatScreen() {
     const socket = io(BASE_API_URL);
 
 
-    const { friendId } = useLocalSearchParams();
+    const { friendId, username, email } = useLocalSearchParams();
+
 
     const [message, setMessage] = useState("");
     const [chat, setChat] = useState([]);
@@ -51,7 +53,7 @@ export default function ChatScreen() {
 
     useEffect(() => {
         socket.on('receive_message', (msg) => {
-            console.log("Received message:", msg);
+            // console.log("Received message:", msg);
             if (
                 msg &&
                 ((msg.senderid === userID && msg.receiverid === friendId) ||
@@ -110,10 +112,18 @@ export default function ChatScreen() {
     }
 
     return (
-        <View style={{ flex: 1, padding: 10 }}>
-            <TouchableOpacity onPress={() => navigation.navigate('friends/friend')}>
-                <Text>Back</Text>
-            </TouchableOpacity>
+        
+        <View style={{ flex: 1 }}>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.navigate('friends/friend')} style={styles.backButton}>
+                    <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+                <View style={styles.userInfo}>
+                    <Text style={styles.username}>{username}</Text>
+                    <Text style={styles.email}>{email}</Text>
+                </View>
+            </View>
+
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -121,11 +131,12 @@ export default function ChatScreen() {
             >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View style={{ flex: 1 }}>
-                        {/* Your main chat content here if any */}
                         <FlatList
                             ref={flatListRef}
+                            contentContainerStyle={{ padding: 7, paddingBottom: 50 }} // Add paddingBottom to avoid keyboard overlap
                             onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
-                            data={[...chat, ...history]}
+                            scrollEnabled={true}
+                            data={[...history, ...chat]}
                             keyExtractor={(_, index) => index.toString()}
                             renderItem={({ item }) => (
                                 <View
@@ -134,18 +145,20 @@ export default function ChatScreen() {
                                         item.senderid === userID ? styles.right : styles.left,
                                     ]}
                                 >
-                                    {/* <Text>{item.id}</Text> */}
                                     <Text style={styles.message}>{item.message}</Text>
                                     <Text style={styles.time}>{formatDate(item.created_at)}</Text>
                                 </View>
                             )}
                         />
+
+                        {/* Input Bar */}
                         <View style={styles.inputContainer}>
                             <TextInput
                                 style={styles.input}
                                 value={message}
                                 onChangeText={setMessage}
-                                placeholder="Message..."
+                                placeholder="Aa"
+                                placeholderTextColor='#999'
                                 multiline
                                 onFocus={() => setInputFocus(true)}
                                 onBlur={() => setInputFocus(false)}
@@ -169,11 +182,11 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     left: {
-        backgroundColor: "#eee",
+        backgroundColor: "gray",
         alignSelf: "flex-start",
     },
     right: {
-        backgroundColor: "#a3d8f4",
+        backgroundColor: "#5A6DAA",
         alignSelf: "flex-end",
     },
     inputContainer: {
@@ -183,24 +196,56 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         borderColor: '#ccc',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'baseline'
     },
     input: {
         flex: 1,
         marginRight: 10,
+        marginBottom: 20,
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 20,
         paddingHorizontal: 15,
         paddingVertical: 10,
-        maxHeight: 100
+        maxHeight: 100,
     },
     message: {
-        fontSize: 17
+        fontSize: 20,
+        color: '#ffffff'
     },
     time: {
         fontSize: 10,
         marginTop: 5,
-        color: '#999'
+        color: '#c7c7c7ff'
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        backgroundColor: '#f5f5f5',
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
+    },
+
+    backButton: {
+        marginRight: 15,
+    },
+
+    userInfo: {
+        flexDirection: 'column',
+        flex: 1,
+        alignItems: 'center'
+    },
+
+    username: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#222',
+    },
+
+    email: {
+        fontSize: 14,
+        color: '#666',
     },
 });
