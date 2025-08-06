@@ -95,7 +95,7 @@ export async function fetchEventTaskUser(req, res) {
 export async function createEventTask(req, res) {
     const { userid, taskid, date } = req.body;
     try {
-        const create = await db`INSERT INTO usertask (userid, taskid, date, status) VALUES (${userid}, ${taskid}, ${date}, "unfinished") RETURNING *`;
+        const create = await db`INSERT INTO usertask (userid, taskid, date, status) VALUES (${userid}, ${taskid}, ${date}, 'unfinished') RETURNING *`;
 
         console.log(create);
         if(create) {
