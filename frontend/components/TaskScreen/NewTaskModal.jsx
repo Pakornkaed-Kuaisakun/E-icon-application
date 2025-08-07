@@ -32,10 +32,15 @@ const NewTaskModal = ({ visible, onClose, tasks, userID }) => {
 
     const fetchEventTaskUser = async () => {
         setLoading(true);
-        const taskIDs = tasks.map(task => task.taskid);
-        console.log(taskIDs);
+        const params = new URLSearchParams();
+        params.append('userID', userID);
+        tasks.forEach(task => params.append('taskIDs', task.taskid));
+        console.log(params);
         try {
-            const eventTaskUser = await axios.get(`${BASE_API_URL}/api/task/fetchEventTaskUser?userID=${userID}&taskIDs=${taskIDs}`);
+            
+
+            const eventTaskUser = await axios.get(`${BASE_API_URL}/api/task/fetchEventTaskUser?${params.toString()}`);
+
 
             if (eventTaskUser.data.eventTaskUser.length > 0) {
                 setEventTaskUser(eventTaskUser.data.eventTaskUser);
