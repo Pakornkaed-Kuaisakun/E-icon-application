@@ -25,6 +25,7 @@ export default function Index() {
     const [loading, setLoading] = useState(false);
     const [getReward, setGetReward] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+    const [howToUseModal, setHowToUseModal] = useState(false);
 
     const fetchUserInfo = useCallback(async () => {
         try {
@@ -66,6 +67,18 @@ export default function Index() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        const checkFirstUse = async () => {
+            const hasSeen = await AsyncStorage.getItem('hasSeenIntroModal');
+            if (!hasSeen) {
+                setHowToUseModal(true);
+                await AsyncStorage.setItem('hasSeenIntroModal', 'true');
+            }
+            // await AsyncStorage.removeItem('hasSeenIntroModal');
+        };
+        checkFirstUse();
+    }, []);
 
     useEffect(() => {
         if (authentication === false) {
@@ -142,6 +155,45 @@ export default function Index() {
                 <BottomNavBar />
             </Animated.View>
             <Modal
+                animationType="fade"
+                transparent={true}
+                visible={howToUseModal}
+                onRequestClose={() => setModalVisible(false)}
+                style={styles.modalContainer}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalBox}>
+
+                        <Text style={styles.title}>Tremo?</Text>
+
+                        <View style={styles.step}>
+                            <Text style={styles.stepText}>1. Complete daily tasks</Text>
+                            <Image source={require('@/assets/images/checklist.png')} style={styles.icon} />
+                        </View>
+                        <View style={styles.step}>
+                            <Text style={styles.stepText}>2. Receive water drops</Text>
+                            <Image source={require('@/assets/images/water.png')} style={styles.icon} />
+                        </View>
+                        <View style={styles.step}>
+                            <Text style={styles.stepText}>3. Water your sprout</Text>
+                        </View>
+                        <Image source={require('@/assets/images/growth.png')} style={styles.growthIcon} />
+                        <View style={styles.step}>
+                            <Text style={styles.stepText}>4. Real tree will be planted in desert</Text>
+                        </View>
+                        <Image source={require('@/assets/images/desert.png')} style={styles.desertIcon} />
+
+                        {/* Okay Button */}
+                        <TouchableOpacity
+                            style={styles.okayButton}
+                            onPress={() => setHowToUseModal(false)}
+                        >
+                            <Text style={{ color: '#fff', fontWeight: 'bold' }}>Okay</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+            <Modal
                 transparent
                 animationType="fade"
                 visible={modalVisible}
@@ -217,5 +269,54 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "white",
         fontSize: 16,
+    },
+    modalBox: {
+        backgroundColor: '#e9f0ff',
+        borderRadius: 20,
+        padding: 24,
+        width: '80%',
+        position: 'relative',
+        alignItems: 'center',
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 12,
+        right: 12,
+        zIndex: 1,
+    },
+    step: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 6,
+    },
+    stepText: {
+        flex: 1,
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: "#5A6DAA",
+    },
+    icon: {
+        width: 50,
+        height: 50,
+        marginLeft: 10,
+    },
+    growthIcon: {
+        width: 300,
+        height: 170,
+        marginLeft: 10,
+        resizeMode: 'contain',
+    },
+    desertIcon: {
+        width: 90,
+        height: 90,
+        marginLeft: 10,
+        resizeMode: 'contain',
+    },
+    okayButton: {
+        backgroundColor: "#5A6DAA",
+        paddingVertical: 10,
+        paddingHorizontal: 24,
+        borderRadius: 10,
+        marginTop: 27,
     },
 });

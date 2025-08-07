@@ -218,7 +218,7 @@ export default function Task() {
             <Animated.View {...panResponder.panHandlers}
                 style={[{ flex: 1, backgroundColor: '#ffffff', transform: [{ translateX }] }]}>
                 <TopNavBarGlobal pageName="Task" />
-                <Text style={{ fontSize: 27, fontWeight: 'bold', textAlign: 'center', marginTop: 15 }}>Daily Task</Text>
+                {/* <Text style={{ fontSize: 27, fontWeight: 'bold', textAlign: 'center', marginTop: 15 }}>Daily Task</Text> */}
                 <View style={{ flex: 1, alignItems: 'center', marginTop: 0 }}>
                     {showCamera ? (
                         <CameraScreen onPictureTaken={handlePictureTaken} onClose={() => setShowCamera(false)} />
@@ -280,7 +280,7 @@ export default function Task() {
                         </View>
                     )}
                 </View>
-                <NewTaskModal visible={eventModalVisible} onClose={() => setEventModalVisible(false)} tasks={eventTask} userID={userID} />
+                <NewTaskModal visible={eventModalVisible} onClose={() => {setEventModalVisible(false); router.replace('task/dailyTask')}} tasks={eventTask} userID={userID} />
                 {modalVisible ? (
                     <CongrateCard imgPath={imgPath} visible={modalVisible} onClose={() => { setModalVisible(false); setImgPath(''); router.replace('task/dailyTask'); setCurrentTask({ userid: null, taskid: null, date: null, point: null, status: 'completed' }); }} />
                 ) : null}

@@ -33,7 +33,6 @@ const NewTaskModal = ({ visible, onClose, tasks, userID }) => {
     const fetchEventTaskUser = async () => {
         setLoading(true);
         const taskIDs = tasks.map(task => task.taskid);
-        console.log(taskIDs);
         try {
             const eventTaskUser = await axios.post(`${BASE_API_URL}/api/task/fetchEventTaskUser`, {userID: userID, taskIDs: taskIDs});
 
@@ -82,7 +81,6 @@ const NewTaskModal = ({ visible, onClose, tasks, userID }) => {
         }
     }, [userID, tasks]);
 
-
     return (
         <Modal
             animationType="slide"
@@ -106,7 +104,14 @@ const NewTaskModal = ({ visible, onClose, tasks, userID }) => {
                                 </View>
                                 <View>
                                     {eventTaskUser.some((e) => e.taskid === item.taskid) ? (
-                                        <ButtonTask />
+                                        <TouchableOpacity style={{
+                                            marginRight: 10,
+                                            paddingHorizontal: 13,
+                                            paddingVertical: 9,
+                                            backgroundColor: '#90A4AE',
+                                            borderRadius: 50 }} disabled={true}>
+                                            <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#ffffff' }}>Created</Text>
+                                        </TouchableOpacity>
                                     ) : (
                                         <TouchableOpacity style={styles.createButton} onPress={() => handleCreateNewEventTask(userID, item.taskid)}>
                                             <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#ffffff' }}>Create</Text>
