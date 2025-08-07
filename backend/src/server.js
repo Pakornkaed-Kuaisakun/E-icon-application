@@ -28,7 +28,7 @@ app.use('/api/photo', photoRoute);
 app.use('/api/app', appInfoRoute);
 app.use('/api/chat', chatRoute);
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 9091;
 const server = http.createServer(app);
 
 const io = new Server(server, {
