@@ -92,18 +92,16 @@ export async function fetchEventTaskUser(req, res) {
             return res.status(400).json({ message: 'Missing userID or taskIDs' });
         }
 
-        // const eventTaskUser = await db`
-        //     SELECT * FROM usertask
-        //     WHERE userid = ${userID}
-        //     AND taskid = ANY(${taskIDs})
-        // `;
+        const eventTaskUser = await db`
+            SELECT * FROM usertask
+            WHERE userid = ${userID}
+            AND taskid IN (${rawTaskIDs});
+        `;
 
 
+        console.log(eventTaskUser);
 
-
-        // console.log(eventTaskUser);
-
-        return res.status(200).json({ eventTaskUser: taskIDs });
+        return res.status(200).json({ eventTaskUser: eventTaskUser });
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Internal Server Error', error: error });
