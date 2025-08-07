@@ -96,7 +96,7 @@ export async function fetchEventTaskUser(req, res) {
 
         console.log(eventTaskUser);
 
-        return res.status(200).json({ eventTaskUser });
+        return res.status(200).json({ eventTaskUser: eventTaskUser });
     } catch (error) {
         return res.status(500).json({ message: 'Internal Server Error', error });
     }
