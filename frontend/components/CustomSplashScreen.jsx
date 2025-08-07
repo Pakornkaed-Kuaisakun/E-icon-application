@@ -32,7 +32,7 @@ export default function CustomSplashScreen({ onFinish, duration }) {
     return (
         <View style={styles.container}>
             <View style={styles.discribe}>
-                <Text style={{ fontSize: 50, color: '#ffffff', textAlign: 'center', fontWeight: 'bold' }}>Tremo</Text>
+                <Text style={{ fontSize: 50, color: '#ffffff', textAlign: 'center', fontWeight: 'bold', borderColor: '#ffffff', borderBottomWidth: 1, paddingBottom: 5 }}>Tremo</Text>
             </View>
             <Image
                 source={require('../assets/images/loadingImage.jpg')}
