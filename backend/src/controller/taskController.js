@@ -93,7 +93,7 @@ export async function fetchEventTaskUser(req, res) {
         const eventTaskUser = await db`
             SELECT * FROM usertask
             WHERE userid = ${userID}
-            AND taskid IN ${db(taskIDs)}
+            AND taskid IN ${db(...taskIDs)}
         `;
 
         console.log(eventTaskUser);
@@ -101,7 +101,7 @@ export async function fetchEventTaskUser(req, res) {
         return res.status(200).json({ eventTaskUser: eventTaskUser });
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: 'Internal Server Error', error });
+        return res.status(500).json({ message: 'Internal Server Error', error: error });
     }
 }
 
