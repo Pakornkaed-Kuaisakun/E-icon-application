@@ -85,9 +85,6 @@ export async function fetchEventTaskUser(req, res) {
         const rawTaskIDs = req.query.taskIDs;
         const taskIDs = rawTaskIDs ? rawTaskIDs.split(',').filter(id => id.trim() !== '') : [];
 
-
-        console.log(taskIDs);
-
         if (!userID || !taskIDs || taskIDs.length === 0) {
             return res.status(400).json({ message: 'Missing userID or taskIDs' });
         }
@@ -95,7 +92,7 @@ export async function fetchEventTaskUser(req, res) {
         const eventTaskUser = await db`
             SELECT * FROM usertask
             WHERE userid = ${userID}
-            AND taskid IN (${db(taskIDs)})
+            AND taskid IN (${db(...taskIDs)})
         `;
 
         console.log(eventTaskUser);
