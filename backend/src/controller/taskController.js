@@ -86,7 +86,7 @@ export async function fetchEventTaskUser(req, res) {
             return res.status(400).json({ message: 'Missing userID or taskIDs' });
         }
 
-        console.log(db(taskID));
+        console.log(db(taskIDs));
 
         const eventTaskUser = await db`SELECT * FROM usertask WHERE userid = ${userID} AND taskid IN ${db(taskIDs)}`;
 
