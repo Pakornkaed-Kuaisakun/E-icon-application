@@ -35,7 +35,7 @@ const NewTaskModal = ({ visible, onClose, tasks, userID }) => {
         const taskIDs = tasks.map(task => task.taskid);
         console.log(taskIDs);
         try {
-            const eventTaskUser = await axios.get(`${BASE_API_URL}/api/task/fetchEventTaskUser/${userID}/${taskIDs}`);
+            const eventTaskUser = await axios.post(`${BASE_API_URL}/api/task/fetchEventTaskUser`, {userID: userID, taskID: taskIDs});
 
             if (eventTaskUser.data.eventTaskUser.length > 0) {
                 setEventTaskUser(eventTaskUser.data.eventTaskUser);

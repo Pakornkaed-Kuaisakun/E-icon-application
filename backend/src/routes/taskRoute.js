@@ -7,7 +7,7 @@ router.post('/getTask', getTask);
 router.get('/getDailyTask', getDailyTask);
 router.post('/updateTaskStatus', updateTaskStatus);
 router.get('/fetchEventTask', fetchEventTask);
-router.get('/fetchEventTaskUser/:userID/:taskIDs', fetchEventTaskUser);
+router.post('/fetchEventTaskUser', fetchEventTaskUser);
 router.post('/createEventTask', createEventTask);
 
 export default router;
