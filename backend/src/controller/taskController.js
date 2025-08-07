@@ -88,7 +88,7 @@ export async function fetchEventTaskUser(req, res) {
 
         console.log(taskIDs);
 
-        const eventTaskUser = await db`SELECT * FROM usertask WHERE userid = ${userID} AND taskid IN ${taskIDs}`;
+        const eventTaskUser = await db`SELECT * FROM usertask WHERE userid = ${userID} AND taskid = ANY(${taskIDs})`;
 
 
         console.log(eventTaskUser);
