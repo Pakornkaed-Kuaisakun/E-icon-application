@@ -13,6 +13,7 @@ import TaskCard from '../../components/TaskScreen/TaskCard';
 import CameraScreen from '../../components/TaskScreen/CameraScreen';
 import { supabase } from '@/assets/lib/supabase';
 import CongrateCard from '../../components/TaskScreen/CongraturationCard';
+import NewTaskModal from '../../components/TaskScreen/NewTaskModal';
 import * as FileSystem from 'expo-file-system';
 
 export default function Task() {
@@ -29,6 +30,7 @@ export default function Task() {
     const [eventMessage, setEventMessage] = useState('');
     const [taskResult, setTaskResult] = useState([]);
     const [taskStatus, setTaskStatus] = useState([]);
+    const [eventTaskStatus, setEventTaskStatus] = useState([]);
     const [eventTask, setEventTask] = useState([]);
     const [showCamera, setShowCamera] = useState(false);
     const [currentTask, setCurrentTask] = useState({ userid: null, taskid: null, date: null, point: null, status: 'completed' })
@@ -255,7 +257,7 @@ export default function Task() {
                                     borderColor: '#5a6daa', // blue frame
                                     borderRadius: 10,
                                 }}
-                                    onPress={() => console.log('Add new task button pressed')}>
+                                    onPress={() => setEventModalVisible(true)}>
                                     <Text style={{ color: '#5a6daa', fontSize: 18, marginRight: 5 }}>make a event task</Text>
                                     <Text
                                         style={{
@@ -278,6 +280,7 @@ export default function Task() {
                         </View>
                     )}
                 </View>
+                <NewTaskModal visible={eventModalVisible} onClose={() => setEventModalVisible(false)} tasks={eventTask} userID={userID} />
                 {modalVisible ? (
                     <CongrateCard imgPath={imgPath} visible={modalVisible} onClose={() => { setModalVisible(false); setImgPath(''); router.replace('task/dailyTask'); setCurrentTask({ userid: null, taskid: null, date: null, point: null, status: 'completed' }); }} />
                 ) : null}

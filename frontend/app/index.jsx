@@ -133,7 +133,7 @@ export default function Index() {
                             <Text style={{ color: 'white' }}>Reward</Text>
                         </TouchableOpacity>
                     ) : (
-                        <WaterButton disabled={userInfo.growingPoint === 0 || loading} onPress={growTree} />
+                        <WaterButton disabled={userInfo.growingPoint <= 0 || loading} onPress={growTree} />
                     )}
                     <Text style={{ marginTop: 15 }}>
                         Point you held: {userInfo.growingPoint} point
