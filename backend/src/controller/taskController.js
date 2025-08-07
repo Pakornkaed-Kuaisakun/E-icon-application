@@ -82,7 +82,9 @@ export async function fetchEventTask(req, res) {
 export async function fetchEventTaskUser(req, res) {
     try {
         const userID = req.query.userID;
-        const taskIDs = req.query.taskIDs?.split(',');
+        const rawTaskIDs = req.query.taskIDs;
+        const taskIDs = rawTaskIDs ? rawTaskIDs.split(',').filter(id => id.trim() !== '') : [];
+
 
         console.log(taskIDs);
 
